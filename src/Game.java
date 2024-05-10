@@ -67,8 +67,6 @@ public class Game extends GameEngine {
 
     public Game() {
         super();
-
-        init();
     }
 
     public static void main(String[] args) {
@@ -76,7 +74,7 @@ public class Game extends GameEngine {
     }
 
     public void startGame(){
-        createGame(new Game());
+        createGame(this);
     }
 
     public void update(double dt) {
