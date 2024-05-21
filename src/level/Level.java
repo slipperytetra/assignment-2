@@ -140,6 +140,11 @@ public class Level {
                     grid.setBlock(x, relY, new BlockSolid(BlockTypes.BL, new Location(x * Game.BLOCK_SIZE, relY * Game.BLOCK_SIZE)));
                 }else if (line.charAt(x) == 'r') {
                     grid.setBlock(x, relY, new BlockSolid(BlockTypes.BR, new Location(x * Game.BLOCK_SIZE, relY * Game.BLOCK_SIZE)));
+                } else if (line.charAt(x) == 'Q') {
+                    Location enemyLoc = new Location(x * Game.BLOCK_SIZE, relY * Game.BLOCK_SIZE);
+                    SkullHead enemy = new SkullHead(this, enemyLoc);
+                    addEntity(enemy);
+
                 }
 
             }

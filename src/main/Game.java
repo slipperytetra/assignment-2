@@ -148,7 +148,7 @@ public class Game extends GameEngine {
         imageBank.put("key",  Toolkit.getDefaultToolkit().createImage("resources/images/keyy.gif"));
         imageBank.put("plant_monsterAttack", Toolkit.getDefaultToolkit().createImage("resources/images/plantAttack.gif"));
         imageBank.put("plant_monster", loadImage("resources/images/characters/plant_monster.png"));
-
+        imageBank.put("skull_head", loadImage("resources/images/characters/skull_head_frame0.png"));
 
     }
 
@@ -156,7 +156,7 @@ public class Game extends GameEngine {
         return imageBank.get(textureName);
     }
 
-    public Image flipImageHorizontal(Image img) {
+    public static Image flipImageHorizontal(Image img) {
         AffineTransform tx = AffineTransform.getScaleInstance(-1.0, 1.0);
         tx.translate(-img.getWidth(null), 0.0);
         AffineTransformOp op = new AffineTransformOp(tx, 1);

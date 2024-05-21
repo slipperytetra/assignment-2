@@ -267,11 +267,10 @@ public abstract class Entity {
     }
 
     public void setHealth(int health) {
-        if (health < 0) {
-            health = 0;
+        this.health = Math.max(0, health);
+        if (this.health == 0) {
+            destroy();
         }
-
-        this.health = health;
     }
 
     public int getMaxHealth() {

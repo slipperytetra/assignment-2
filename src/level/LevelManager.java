@@ -44,13 +44,14 @@ public class LevelManager {
          *  The boolean static means if the text should show at a fixed position in the world e.g. the player
          *  can walk past it or if static is set to true, then the text will show at a constant position on the screen
          *  and follow the player as they move.
-         */
+         *
         DEMO.addTextMessage(new TextMessage(new Location(10, 100), "Welcome to our game!", 50, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(10, 200), "Press 'D' to move right and 'A' to move left.", 20, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(10, 330), "Hold 'Q' to attack with your sword.", 20, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(10, 360), "Press 'Space' to jump!", 20, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(10, 380), "Grab key to unlock door to proceed to next level!", 20, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(570, 670), "Press 'E' on door to enter!", 20, false, Color.black));
+         */
     }
 
     public Game getEngine() {

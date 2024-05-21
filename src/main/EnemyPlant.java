@@ -18,7 +18,8 @@ public class EnemyPlant extends Enemy {
         super(level, EntityType.PLANT_MONSTER, loc, 58, 79);
 
         setDamage(5);
-        setMaxHealth(100);
+        setMaxHealth(5);
+        setHealth(getMaxHealth());
         setScale(1);
         this.healthTimer = new Timer(500, (ActionListener)null);
         this.healthTimer.setRepeats(false);

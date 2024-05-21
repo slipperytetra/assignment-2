@@ -1,5 +1,6 @@
 package main;
 
+import block.Block;
 import block.BlockClimbable;
 import block.BlockTypes;
 import level.Level;
@@ -14,7 +15,6 @@ import java.util.Set;
 public class Player extends Entity {
     private JProgressBar healthBar;
     private GameEngine.AudioClip attack;
-
 
     private boolean keyObtained;
     private boolean doorTouched;
@@ -156,7 +156,11 @@ public class Player extends Entity {
 
             double hitBoxOffsetX = getCollisionBox().getLocation().getX() + cam.centerOffsetX;
             double hitBoxOffsetY = getCollisionBox().getLocation().getY() + cam.centerOffsetY;
-            game.drawRectangle(getBlockBelowEntity().getLocation().getX() + cam.centerOffsetX, getBlockBelowEntity().getLocation().getY() + cam.centerOffsetY, Game.BLOCK_SIZE, Game.BLOCK_SIZE);
+
+            Block blockBelow = getBlockBelowEntity();
+            if (blockBelow != null) {
+                game.drawRectangle(blockBelow.getLocation().getX() + cam.centerOffsetX, blockBelow.getLocation().getY() + cam.centerOffsetY, Game.BLOCK_SIZE, Game.BLOCK_SIZE);
+            }
 
             game.changeColor(getHitboxColor());
             game.drawRectangle(hitBoxOffsetX, hitBoxOffsetY, getCollisionBox().getWidth(), getCollisionBox().getHeight());
