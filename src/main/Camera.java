@@ -147,6 +147,7 @@ public class Camera {
 
     public void renderUI() {
         Location healthBarLoc = new Location(50, 35);
+        Location label = new Location(50,35);
 
         double localXDiff = healthBarLoc.getX();
         double localYDiff = healthBarLoc.getY();
@@ -168,6 +169,8 @@ public class Camera {
 
         game.changeColor(Color.RED);
         game.drawSolidRectangle(localXDiff,localYDiff, player.getHealth(), 15);
+        game.drawText(localXDiff+50,localYDiff, String.valueOf(player.getHealth()), 20);
+
         //game.drawText(zoom * localXDiff, zoom * localYDiff, txtMsg.getText(), "Serif", txtMsg.getFontSize());
     }
 

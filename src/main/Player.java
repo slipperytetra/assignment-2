@@ -38,6 +38,8 @@ public class Player extends Entity {
     Image gifImage2;
     Image level1;
 
+    private GameEngine.AudioClip hit;
+
     private Enemy target;
 
     public Player(Level level, Location loc) {
@@ -60,6 +62,7 @@ public class Player extends Entity {
 
         gifImage2 = Toolkit.getDefaultToolkit().createImage("resources/images/keyy.gif");
         level1 = Toolkit.getDefaultToolkit().createImage("resources/images/level1.gif");
+        hit = getLevel().getManager().getEngine().loadAudio("resources/sounds/hit.wav");
 
         this.healthBar = new JProgressBar(0, getMaxHealth());
         this.healthBar.setBounds(100, 25, 100, 10); // Adjust position and size as needed
@@ -280,6 +283,8 @@ public class Player extends Entity {
 
          if(canAttack()){
              System.out.println(getTarget().getHealth());
+             getLevel().getManager().getEngine().playAudio(hit);
+
 
              getTarget().setHealth(getTarget().getHealth()- 2);
              System.out.println(getTarget().getHealth());

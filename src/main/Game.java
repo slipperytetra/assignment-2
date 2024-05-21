@@ -149,6 +149,9 @@ public class Game extends GameEngine {
         imageBank.put("plant_monsterAttack", Toolkit.getDefaultToolkit().createImage("resources/images/plantAttack.gif"));
         imageBank.put("plant_monster", loadImage("resources/images/plantAttack.gif"));
 
+        imageBank.put("heart", Toolkit.getDefaultToolkit().createImage("resources/images/heart.gif"));
+
+
 
     }
 
