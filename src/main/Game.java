@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Game extends GameEngine {
-    public static int BLOCK_SIZE = 32;
+    public static int BLOCK_SIZE = 32, score;
     private boolean gameOver;
 
     public long timeSinceLastFrame;
@@ -84,9 +84,15 @@ public class Game extends GameEngine {
             gameOver = true;
             drawText(100,100,"You died",30);
             getActiveLevel().reset();
-        } else {
+
+        }
+        else {
             camera.draw();
         }
+    }
+
+    public void incrementScore(){
+        score += 10;
     }
 
     @Override
@@ -149,6 +155,8 @@ public class Game extends GameEngine {
         imageBank.put("plant_monsterAttack", Toolkit.getDefaultToolkit().createImage("resources/images/plantAttack.gif"));
         imageBank.put("plant_monster", loadImage("resources/images/characters/plant_monster.png"));
         imageBank.put("skull_head", loadImage("resources/images/characters/skull_head_frame0.png"));
+        imageBank.put("gold_coin", loadImage(EntityType.GOLD_COIN.getFilePath() + "_frame0.png"));
+
 
     }
 

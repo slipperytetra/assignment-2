@@ -7,6 +7,7 @@ public enum EntityType {
     KEY("resources/images/blocks/key.png"),
     PLANT_MONSTER("resources/images/characters/plant_monster.png"),
     SKULL_HEAD("resources/images/characters/skull_head"),
+    GOLD_COIN("resources/images/goldcoin/gold_coin"),
     STONE_DOOR("resources/images/blocks/stoneDoor.png");
 
 

@@ -4,7 +4,7 @@ import block.Block;
 import block.BlockClimbable;
 import block.BlockTypes;
 import level.Level;
-
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -39,12 +39,10 @@ public class Player extends Entity {
     Image level1;
 
     private Enemy target;
+    private int score;
 
     public Player(Level level, Location loc) {
         super(EntityType.PLAYER, level, loc, 19, 29);
-
-
-
         setHitboxColor(Color.cyan);
         setMaxHealth(100);
         setHealth(getMaxHealth());
@@ -87,6 +85,29 @@ public class Player extends Entity {
         System.out.println(attackCounter);
         if (attackCounter < ATTACK_COOLDOWN) {
             attackCounter += 1 * dt;
+        }
+        checkGoldCoinCollisions(getLevel().getManager().getEngine());
+    }
+
+    public int getScore(){
+        return score;
+    }
+
+    public void incrementScore(){
+        score += 10;
+    }
+
+    // New method to check for collisions with gold coins
+    public void checkGoldCoinCollisions(Game game) {
+        List<Entity> entities = getLevel().getEntities();
+        for (Entity entity : entities) {
+            if (entity instanceof GoldCoin) {
+                GoldCoin coin = (GoldCoin) entity;
+                if (!coin.isCollected() && getCollisionBox().collidesWith(coin.getCollisionBox())) {
+                    coin.collect();
+                    game.incrementScore(); // Increment score by 1 for each coin collected
+                }
+            }
         }
     }
 

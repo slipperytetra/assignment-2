@@ -13,11 +13,11 @@ public class SkullHead extends Enemy {
     private List<BufferedImage> frames;
     private int currentFrame;
     private long lastFrameTime, frameDuration, lastAttackTime, attackCooldown = 1500;
-    private double upwardRange = 150, downwardRange = 1, speed = 50, startY;;
+    private double upwardRange = 160, downwardRange = 5, speed = 50, startY;;
     private boolean movingUp = true;
 
     public SkullHead(Level level, Location loc) {
-        super(level, EntityType.SKULL_HEAD, loc, 40, 34);
+        super(level, EntityType.SKULL_HEAD, loc, 30, 28);
         this.frames = new ArrayList<>();
         this.currentFrame = 0;
         this.lastFrameTime = 0;
