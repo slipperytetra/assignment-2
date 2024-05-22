@@ -15,7 +15,6 @@ import java.util.Set;
 public class Player extends Entity {
     private JProgressBar healthBar;
     private GameEngine.AudioClip attack;
-
     private boolean keyObtained;
     private boolean doorTouched;
     private boolean attackRegistered = false;

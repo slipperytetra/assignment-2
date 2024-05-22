@@ -1,7 +1,7 @@
 name: Demo
 background: resources/images/blackground.jpg
 nest_level: level_demo3
-level_width: 30
+level_width: 75
 level_heiSht: 33
 level_data:
   [BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB]

@@ -2,6 +2,9 @@ package main;
 
 import level.Level;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,6 +18,7 @@ public class SkullHead extends Enemy {
     private long lastFrameTime, frameDuration, lastAttackTime, attackCooldown = 1500;
     private double upwardRange = 160, downwardRange = 5, speed = 50, startY;;
     private boolean movingUp = true;
+    private Clip damageSound;
 
     public SkullHead(Level level, Location loc) {
         super(level, EntityType.SKULL_HEAD, loc, 30, 28);
@@ -29,6 +33,7 @@ public class SkullHead extends Enemy {
         this.lastAttackTime = 0;
 
         loadFrames();
+        loadSound();
     }
 
     private void loadFrames() {
@@ -54,6 +59,17 @@ public class SkullHead extends Enemy {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void loadSound() {
+        try {
+            File soundFile = new File("resources/sounds/skullheadDmg.wav"); // Ensure the sound file is a .wav file
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+            damageSound = AudioSystem.getClip();
+            damageSound.open(audioInputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -84,6 +100,7 @@ public class SkullHead extends Enemy {
             player.setHealth(player.getHealth() - getDamage());
             System.out.println("Player hit! Health remaining: " + player.getHealth());
             lastAttackTime = System.currentTimeMillis();
+            playDamageSound();
         }
     }
 
@@ -97,6 +114,13 @@ public class SkullHead extends Enemy {
         Player player = getLevel().getPlayer();
         long currentTime = System.currentTimeMillis();
         return player != null && player.getCollisionBox().collidesWith(this.getCollisionBox()) && (currentTime - lastAttackTime) >= attackCooldown;
+    }
+
+    private void playDamageSound() {
+        if (damageSound != null) {
+            damageSound.setFramePosition(0); // Rewind to the beginning
+            damageSound.start();
+        }
     }
 
     @Override

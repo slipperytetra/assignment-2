@@ -38,11 +38,6 @@ public abstract class Block {
     public Location getLocation() {
         return loc;
     }
-    public boolean isSolid() {
-        // Assuming some block types are solid and others are not
-        return type == BlockTypes.DIRT || type == BlockTypes.GRASS || type == BlockTypes.STONE_FLOOR || type == BlockTypes.STONE_FILLER ||
-                type == BlockTypes.BARRIER || type == BlockTypes.BRIDGE || type == BlockTypes.BL || type == BlockTypes.BR;
-    }
 
     public void setLocation(double x, double y) {
         this.loc.setX(x);
