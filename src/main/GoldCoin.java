@@ -8,16 +8,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
+<<<<<<< HEAD
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+=======
+>>>>>>> origin/napn-v2
 
 public class GoldCoin extends Entity {
     private List<BufferedImage> frames;
     private int currentFrame;
     private long lastFrameTime, frameDuration;
     private boolean collected;
+<<<<<<< HEAD
     private Clip coinSound;
+=======
+>>>>>>> origin/napn-v2
 
     public GoldCoin(Level level, Location loc) {
         super(EntityType.GOLD_COIN, level, loc, 18, 18);
@@ -27,7 +33,10 @@ public class GoldCoin extends Entity {
         this.frameDuration = 100;
         this.collected = false;
         loadFrames();
+<<<<<<< HEAD
         loadSound();
+=======
+>>>>>>> origin/napn-v2
     }
 
     private void loadFrames() {
@@ -56,6 +65,7 @@ public class GoldCoin extends Entity {
         }
     }
 
+<<<<<<< HEAD
     private void loadSound(){
         try{
             File soundFile = new File("resources/sounds/coin.wav");
@@ -69,6 +79,8 @@ public class GoldCoin extends Entity {
 
 
 
+=======
+>>>>>>> origin/napn-v2
     @Override
     public void render(Camera cam) {
         if (!collected) {
@@ -107,9 +119,12 @@ public class GoldCoin extends Entity {
 
     public void collect() {
         collected = true;
+<<<<<<< HEAD
         if(coinSound != null){
             coinSound.setFramePosition(0);
             coinSound.start();
         }
+=======
+>>>>>>> origin/napn-v2
     }
 }
