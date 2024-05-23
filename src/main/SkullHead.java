@@ -16,7 +16,7 @@ public class SkullHead extends Enemy {
     private List<BufferedImage> frames;
     private int currentFrame;
     private long lastFrameTime, frameDuration, lastAttackTime, attackCooldown = 1500;
-    private double upwardRange = 160, downwardRange = 5, speed = 50, startY;;
+    private double upwardRange = 160, downwardRange = 5, speed = 50, startY;
     private boolean movingUp = true;
     private Clip damageSound;
 
@@ -32,22 +32,24 @@ public class SkullHead extends Enemy {
 
         this.lastAttackTime = 0;
 
-        loadFrames();
-        loadSound();
+        loadFrames(); // Load animation frames
+        loadSound(); // Load damage sound
     }
 
+    // Load animation frames from files
     private void loadFrames() {
         for (int i = 0; i < 15; i++) {
             String path = EntityType.SKULL_HEAD.getFilePath() + "_frame" + i + ".png";
             BufferedImage frame = loadImage(path);
             if (frame != null) {
-                frames.add((BufferedImage) Game.flipImageHorizontal(frame));
+                frames.add((BufferedImage) Game.flipImageHorizontal(frame)); // Add flipped frames
             } else {
                 System.err.println("Error: Could not load frame from path: " + path);
             }
         }
     }
 
+    // Load image from file
     private BufferedImage loadImage(String path) {
         try {
             File file = new File(path);
@@ -62,9 +64,10 @@ public class SkullHead extends Enemy {
         }
     }
 
+    // Load damage sound
     private void loadSound() {
         try {
-            File soundFile = new File("resources/sounds/skullheadDmg.wav"); // Ensure the sound file is a .wav file
+            File soundFile = new File("resources/sounds/avgDmg.wav"); // Ensure the sound file is a .wav file
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
             damageSound = AudioSystem.getClip();
             damageSound.open(audioInputStream);
@@ -73,6 +76,7 @@ public class SkullHead extends Enemy {
         }
     }
 
+    // Process enemy movement
     @Override
     public void processMovement(double dt) {
         double moveY = (movingUp ? -1 : 1) * speed * dt;
@@ -87,12 +91,13 @@ public class SkullHead extends Enemy {
             movingUp = true;
         }
 
-        // Check for collision with player
+        // Check for collision with player and attack if possible
         if (canAttack()) {
             attack();
         }
     }
 
+    // Perform enemy attack
     @Override
     public void attack() {
         Player player = getLevel().getPlayer();
@@ -100,7 +105,7 @@ public class SkullHead extends Enemy {
             player.setHealth(player.getHealth() - getDamage());
             System.out.println("Player hit! Health remaining: " + player.getHealth());
             lastAttackTime = System.currentTimeMillis();
-            playDamageSound();
+            playDamageSound(); // Play damage sound
         }
     }
 
@@ -109,6 +114,7 @@ public class SkullHead extends Enemy {
         return false;
     }
 
+    // Check if enemy can perform an attack
     @Override
     public boolean canAttack() {
         Player player = getLevel().getPlayer();
@@ -116,6 +122,7 @@ public class SkullHead extends Enemy {
         return player != null && player.getCollisionBox().collidesWith(this.getCollisionBox()) && (currentTime - lastAttackTime) >= attackCooldown;
     }
 
+    // Play damage sound
     private void playDamageSound() {
         if (damageSound != null) {
             damageSound.setFramePosition(0); // Rewind to the beginning
@@ -123,9 +130,10 @@ public class SkullHead extends Enemy {
         }
     }
 
+    // Render the enemy
     @Override
     public void render(Camera cam) {
-        updateAnimation();
+        updateAnimation(); // Update animation frame
         double offsetX = getLocation().getX() + cam.centerOffsetX;
         double offsetY = getLocation().getY() + cam.centerOffsetY;
 
@@ -142,6 +150,7 @@ public class SkullHead extends Enemy {
 
         getLevel().getManager().getEngine().drawImage(currentFrame, offsetX, offsetY, getWidth(), getHeight());
 
+        // Render hitbox if enabled
         if (cam.showHitboxes) {
             double hitBoxOffsetX = getCollisionBox().getLocation().getX() + cam.centerOffsetX;
             double hitBoxOffsetY = getCollisionBox().getLocation().getY() + cam.centerOffsetY;
@@ -151,6 +160,7 @@ public class SkullHead extends Enemy {
         }
     }
 
+    // Update animation frame
     private void updateAnimation() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastFrameTime > frameDuration) {
@@ -159,24 +169,27 @@ public class SkullHead extends Enemy {
         }
     }
 
+    // Get the current frame image
     @Override
     public Image getActiveFrame() {
         return frames.get(currentFrame);
     }
 
+    // Get the width of the current frame
     @Override
     public double getWidth() {
         return frames.get(currentFrame).getWidth() * getScale();
     }
 
+    // Get the height of the current frame
     @Override
     public double getHeight() {
         return frames.get(currentFrame).getHeight() * getScale();
     }
 
+    // Destroy the enemy
     @Override
     public void destroy() {
         super.destroy();
     }
 }
-

@@ -156,6 +156,7 @@ public class Game extends GameEngine {
         imageBank.put("plant_monster", loadImage("resources/images/characters/plant_monster.png"));
         imageBank.put("skull_head", loadImage("resources/images/characters/skull_head_frame0.png"));
         imageBank.put("gold_coin", loadImage(EntityType.GOLD_COIN.getFilePath() + "_frame0.png"));
+        imageBank.put("bee", loadImage("resources/images/characters/bee/bee_idle_frame0.png"));
 
 
     }

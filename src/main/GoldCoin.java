@@ -1,7 +1,6 @@
 package main;
 
 import level.Level;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +18,7 @@ public class GoldCoin extends Entity {
     private boolean collected;
     private Clip coinSound;
 
+    // Constructor
     public GoldCoin(Level level, Location loc) {
         super(EntityType.GOLD_COIN, level, loc, 18, 18);
         this.frames = new ArrayList<>();
@@ -26,10 +26,11 @@ public class GoldCoin extends Entity {
         this.lastFrameTime = 0;
         this.frameDuration = 100;
         this.collected = false;
-        loadFrames();
-        loadSound();
+        loadFrames(); // Load coin animation frames
+        loadSound(); // Load sound effect
     }
 
+    // Load coin animation frames
     private void loadFrames() {
         for (int i = 0; i < 9; i++) {
             String path = EntityType.GOLD_COIN.getFilePath() + "_frame" + i + ".png";
@@ -42,6 +43,7 @@ public class GoldCoin extends Entity {
         }
     }
 
+    // Load image from file
     private BufferedImage loadImage(String path) {
         try {
             File file = new File(path);
@@ -56,6 +58,7 @@ public class GoldCoin extends Entity {
         }
     }
 
+    // Load sound effect
     private void loadSound(){
         try{
             File soundFile = new File("resources/sounds/coin.wav");
@@ -67,10 +70,11 @@ public class GoldCoin extends Entity {
         }
     }
 
+    // Render the coin
     @Override
     public void render(Camera cam) {
         if (!collected) {
-            updateAnimation();
+            updateAnimation(); // Update coin animation
             double offsetX = getLocation().getX() + cam.centerOffsetX;
             double offsetY = getLocation().getY() + cam.centerOffsetY;
 
@@ -87,10 +91,13 @@ public class GoldCoin extends Entity {
         }
     }
 
+    // Process movement (no movement for coins)
     @Override
     public void processMovement(double dt) {
+        // No movement for coins
     }
 
+    // Update coin animation
     private void updateAnimation() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastFrameTime > frameDuration) {
@@ -99,15 +106,17 @@ public class GoldCoin extends Entity {
         }
     }
 
+    // Check if the coin is collected
     public boolean isCollected() {
         return collected;
     }
 
+    // Collect the coin
     public void collect() {
         collected = true;
         if(coinSound != null){
             coinSound.setFramePosition(0);
-            coinSound.start();
+            coinSound.start(); // Play coin sound
         }
     }
 }

@@ -157,6 +157,10 @@ public class Level {
                         GoldCoin coin = new GoldCoin(this, coinLoc);
                         addEntity(coin);
                         break;
+                    case 'M':
+                        Location beeLoc = new Location(x * Game.BLOCK_SIZE, relY * Game.BLOCK_SIZE);
+                        Bee bee = new Bee(this, beeLoc);
+                        addEntity(bee);
                 }
             }
             relY++;
