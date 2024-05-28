@@ -11,14 +11,15 @@ import level.Particle;
 import level.TextMessage;
 
 import java.awt.*;
+import java.time.Duration;
 
 /*
-*   This class handles the rendering of all objects on the screen.
-*
-*   It works by making the players location the center of the screen and only drawings the objects that are
-*   around the player, taking into account the dimensions of the screen.
-*
-* */
+ *   This class handles the rendering of all objects on the screen.
+ *
+ *   It works by making the players location the center of the screen and only drawings the objects that are
+ *   around the player, taking into account the dimensions of the screen.
+ *
+ * */
 public class Camera {
 
     public Location loc, centerPoint;
@@ -44,25 +45,10 @@ public class Camera {
         this.player = p;
         this.loc = new Location(p.getLocation().getX(), p.getLocation().getY());
 
-
-        /*
-        *   'point1' is the top left location of the screen.
-        *   'point2' is the bottom right location of the screen.
-        *
-        *   It works these out by getting the players location and then subtracting half of the screen's width and height
-        *   to get the first point (point1), then adding the screen's width and height for the second point (point2).
-        *
-        *   By having these two points, we can see if world objects are between these two points, and if so then draw them. If they
-        *   aren't then we can just ignore them.
-        * */
         Location point1 = new Location(p.getLocation().getX() - (game.width() / 2), p.getLocation().getY() - (game.height() / 2));
-
         this.collisionBox = new CollisionBox(point1.getX(), point1.getY(), game.width(), game.height());
     }
 
-    /*
-    *   This method constantly updates the points. This is needed because the players location always changes.
-    * */
     public void update() {
         calculateFPS();
 
@@ -77,8 +63,6 @@ public class Camera {
         collisionBox.setSize(game.width(), game.height());
     }
 
-
-
     public void draw() {
         renderBackground();
         renderDecorations();
@@ -91,17 +75,6 @@ public class Camera {
         renderUI();
     }
 
-
-
-
-    /*
-    *   Most renderer functions work the same way. They look through all the objects in the relevant list,
-    *   in this case its decorations. Then it calls their render function which just draws the object's texture
-    *   taking into account certain factors like scale, offsets ect.
-    *
-    *   It also checks if the object is viewable on the camera before drawing it by comparing its collision
-    *   box to the camera's collision box (width and height of the screen)
-    * */
     private void renderDecorations() {
         DEBUG_DECORATIONS_ON_SCREEN = 0;
         for (Decoration deco : game.getActiveLevel().getDecorations()) {
@@ -120,28 +93,16 @@ public class Camera {
         }
     }
 
-    /*
-    *   This is where each individual block is drawn. It goes through the entire world map and checks if the blocks are
-    *   between our point1 and point2. If they are, this means they are visible to the camera and should be drawn.
-    *
-    * */
     private void renderBlocks() {
         DEBUG_BLOCKS_ON_SCREEN = 0;
         for (int x = 0; x < game.getActiveLevel().getBlockGrid().getWidth(); x++) {
-            for (int y = 0; y < game.getActiveLevel().getBlockGrid().getHeight(); y++) { //Iterating over all the blocks
-                Block b = game.getActiveLevel().getBlockGrid().getBlocks()[x][y]; //Getting the block from the grid based on the coordinates
+            for (int y = 0; y < game.getActiveLevel().getBlockGrid().getHeight(); y++) {
+                Block b = game.getActiveLevel().getBlockGrid().getBlocks()[x][y];
                 if (b.getType() == BlockTypes.VOID || b.getType() == BlockTypes.BARRIER) {
-                    continue; //Skip void because its an empty block.
+                    continue;
                 }
 
                 if (b.getLocation().isBlockBetween(getPoint1(), getPoint2())) {
-                    /*
-                    *   Here we have to convert the blocks coordinates to be relative to the camera.
-                    *   Basically in update(dt) we calculate the centerOffset by getting the center of the screen and then subtracting
-                    *   the players location from it.
-                    *
-                    *   Then in here, we get the block's location and add the centerOffset to it.
-                    * */
                     double blockOffsetX = b.getLocation().getX() + centerOffsetX;
                     double blockOffsetY = b.getLocation().getY() + centerOffsetY;
 
@@ -152,10 +113,6 @@ public class Camera {
         }
     }
 
-
-    /*
-    *   Same renderer concept, entities just have an active boolean.
-    * */
     public void renderEntities() {
         DEBUG_ENTITIES_ON_SCREEN = 0;
         for (Entity entity : game.getActiveLevel().getEntities()) {
@@ -177,14 +134,6 @@ public class Camera {
         }
     }
 
-
-    /*
-    *   This renders text in the actual level. It's mostly used in the demo levels for displaying help
-    *   messages.
-    *
-    *   Levels have an embedded list of TextMessage objects that have an assigned location, string and other
-    *   string attributes. Makes it easier for displaying the text relative to the player's position.
-    * */
     public void renderTextMessages() {
         for (TextMessage txtMsg : game.getActiveLevel().getTextMessages().values()) {
             if (txtMsg == null) {
@@ -207,18 +156,11 @@ public class Camera {
         }
     }
 
-    /*
-    *   Here is where all the UI related things are drawn. It displays the player health, pause menu, key ect
-    *   and is the one of the last things to render so that it displays on top of the level.
-    *
-    *   It also displays all the debug information which is useful when making the game or testing features.
-    * */
     public void renderUI() {
         if (game.isPaused) {
             game.changeColor(Color.orange);
             game.drawText((game.width() / 2) - 100, game.height() / 2, "Paused", 75);
             game.drawText((game.width() / 2) - 110, game.height() / 2 + 100, "Press 'Q' to Quit.", 40);
-
             return;
         }
 
@@ -232,16 +174,19 @@ public class Camera {
         game.drawText(1180,50,"Key : ", 20);
         game.drawText(150,35,"Score : " + player.getScore(), 20);
 
-        //game.drawText(1180,80,"Score : " + player.score, 20);
+        // Display the timer
+        Duration elapsedTime = game.lvlManager.getElapsedTime();
+        long minutes = elapsedTime.toMinutes();
+        long seconds = elapsedTime.toSecondsPart();
+        game.drawText(600, 35, String.format("Time: %02d:%02d", minutes, seconds), 20);
+
         if (game.getActiveLevel().getPlayer().hasKey()) {
             game.drawImage(game.imageBank.get("key"), 1230, 20, 50, 50);
         }
 
         drawHealthBar(player, localXDiff, localYDiff);
         game.changeColor(Color.red);
-        //game.drawSolidRectangle(localXDiff,localYDiff, player.getHealth(), 15);
-        game.drawText(localXDiff+50,localYDiff, String.valueOf(player.getHealth()), 20);
-
+        game.drawText(localXDiff + 50, localYDiff, String.valueOf(player.getHealth()), 20);
 
         if (debugMode) { //Press 'H' to enable
             game.changeColor(Color.yellow);
@@ -267,10 +212,10 @@ public class Camera {
             game.drawRectangle(hitboxOffsetX, hitboxOffsetY, getCollisionBox().getWidth(), getCollisionBox().getHeight());
         }
     }
-    public void renderFX(){
 
-        if(game.getActiveLevel().getId() == 3){
-            game.drawImage(game.getTexture("snowFall"),0,0,game.width(),game.height());
+    public void renderFX() {
+        if (game.getActiveLevel().getId() == 3) {
+            game.drawImage(game.getTexture("snowFall"), 0, 0, game.width(), game.height());
         }
         DEBUG_PARTICLES_ON_SCREEN = 0;
         for (Particle particle : game.getActiveLevel().getParticles()){
@@ -279,16 +224,12 @@ public class Camera {
         }
 
         if (game.imageBank.get("overlay") != null) {
-            //System.out.println("Draw bg");
             game.drawImage(game.imageBank.get("overlay"), 0, 0, game.width(), game.height());
         }
-
-
     }
 
     private void renderBackground() {
         if (game.imageBank.get("background") != null) {
-            //System.out.println("Draw bg");
             game.drawImage(game.imageBank.get("background"), 0, 0, game.width(), game.height());
         }
     }
@@ -328,3 +269,4 @@ public class Camera {
         game.drawSolidRectangle(xPos + barSize,yPos, 100 - barSize, 15);
     }
 }
+
