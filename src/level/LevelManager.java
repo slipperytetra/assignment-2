@@ -5,6 +5,8 @@ import main.GameEngine;
 import main.Location;
 
 import java.awt.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 
 public class LevelManager {
