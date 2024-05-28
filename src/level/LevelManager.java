@@ -35,7 +35,7 @@ public class LevelManager {
         DEMO = new Level(this, 0, "resources/levels/level_demo.txt");
         DEMO_2 = new Level(this, 1, "resources/levels/level_demo_2.txt");
         LEVEL_3 = new Level(this, 2, "resources/levels/level_demo3.txt");
-        LEVEL_4 = new Level(this,3,"resources/levels/level5.txt");
+        LEVEL_4 = new Level(this,3,"resources/levels/level4.txt");
         FOREST = new Level(this,4,"resources/levels/level_forest.txt");
         LEVEL_5 = new Level(this,5,"resources/levels/level5.txt");
         END = new Level(this,6,"resources/levels/endLevel.txt");
