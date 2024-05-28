@@ -59,7 +59,7 @@ public class Bee extends Enemy {
 
     // Reset attack timer with random interval
     private void resetAttackTimer() {
-        int interval = 3000 + random.nextInt(2000); // Random interval between 3000ms (3s) and 5000ms (5s)
+        int interval = 3000 + random.nextInt(2000);
         attackTimer.setInitialDelay(interval);
         attackTimer.restart();
     }
@@ -75,10 +75,6 @@ public class Bee extends Enemy {
                 System.err.println("Error: Could not load frame from path: " + path);
             }
         }
-
-        if (idleFrames.isEmpty()) {
-            System.err.println("Error: No frames loaded for Bee.");
-        }
     }
 
     // Load death animation frames
@@ -92,15 +88,11 @@ public class Bee extends Enemy {
                 System.err.println("Error: Could not load death frame from path: " + path);
             }
         }
-
-        if (deathFrames.isEmpty()) {
-            System.err.println("Error: No death frames loaded for Bee.");
-        }
     }
 
     // Load attack animation frames
     private void loadAttackFrames() {
-        for (int i = 0; i < 4; i++) { // Adjust the frame count as necessary
+        for (int i = 0; i < 12; i++) {
             String path = "resources/images/characters/bee/bee_attack_frame" + i + ".png";
             BufferedImage frame = loadImage(path);
             if (frame != null) {
@@ -108,10 +100,6 @@ public class Bee extends Enemy {
             } else {
                 System.err.println("Error: Could not load attack frame from path: " + path);
             }
-        }
-
-        if (attackFrames.isEmpty()) {
-            System.err.println("Error: No attack frames loaded for Bee.");
         }
     }
 
@@ -147,7 +135,7 @@ public class Bee extends Enemy {
         Location projectileLoc = new Location(projectileX, projectileY);
         double speedX = -200; // Adjust projectile speed as needed
         double speedY = 0; // Adjust projectile speed as needed
-        BeeStinger stinger = new BeeStinger(getLevel(), projectileLoc, speedX, speedY);
+        BeeStinger stinger = new BeeStinger(getLevel(), projectileLoc, speedX);
         getLevel().addEntity(stinger);
     }
 
