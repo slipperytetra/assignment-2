@@ -12,6 +12,11 @@ public class LevelManager {
     Game engine;
 
     HashMap<String, Level> levels;
+    
+    private Instant startTime;
+    private Instant endTime;
+    private boolean timerRunning;
+    private Duration elapsedTime; 
 
     // Define the level variable name.
     public Level DEMO;
@@ -27,6 +32,7 @@ public class LevelManager {
         this.engine = engine;
         this.levels = new HashMap<>();
         loadLevels();
+        elapsedTime = Duration.ZERO;
     }
 
     public void loadLevels() {
@@ -63,6 +69,39 @@ public class LevelManager {
         DEMO.addTextMessage(new TextMessage(new Location(10, 360), "Press 'Space' to jump!", 20, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(10, 380), "Grab key to unlock door to proceed to next level!", 20, false, Color.black));
         DEMO.addTextMessage(new TextMessage(new Location(570, 670), "Press 'E' on door to enter!", 20, false, Color.black));
+    }
+
+        // Method to start the timer
+    public void startTimer() {
+        if (!timerRunning) {
+            startTime = Instant.now();
+            timerRunning = true;
+        }
+    }
+
+    // Method to stop the timer
+    public void stopTimer() {
+        if (timerRunning) {
+            endTime = Instant.now();
+            elapsedTime = Duration.between(startTime, endTime); // Store the elapsed time
+            timerRunning = false;
+        }
+    }
+
+    // Method to get the elapsed time
+    public Duration getElapsedTime() {
+        if (timerRunning) {
+            return Duration.between(startTime, Instant.now());
+        }
+        return elapsedTime; // Return the stored elapsed time when the timer is stopped
+    }
+
+    public void onTutorialComplete() {
+        startTimer();
+    }
+
+    public void onLastLevelEnter() {
+        stopTimer();
     }
 
     public Game getEngine() {
