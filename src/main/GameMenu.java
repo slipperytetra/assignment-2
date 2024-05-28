@@ -4,19 +4,20 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class GameMenu {
     private JFrame frame;
     private JLabel backgroundLabel;
-    private Clip menuMusic; // Clip for the menu music
+    private Clip menuMusic;
 
     public GameMenu() {
         frame = new JFrame("Game Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1280, 720);
 
-        JLabel titleLabel = new JLabel("", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Our Game's Menu", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setOpaque(false);
@@ -29,7 +30,6 @@ public class GameMenu {
         JButton startGameButton = new JButton("Start Game");
         startGameButton.addActionListener(e -> {
             stopMenuMusic();
-            // Get the reference to the frame containing the button
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(startGameButton);
             if (parentFrame != null) {
                 parentFrame.dispose();
@@ -43,24 +43,26 @@ public class GameMenu {
         JButton quitButton = new JButton("Quit Game");
         quitButton.addActionListener(e -> System.exit(0));
 
-        GridBagConstraints buttonConstraints = new GridBagConstraints();
-        buttonConstraints.gridx = 0;
-        buttonConstraints.fill = GridBagConstraints.HORIZONTAL;
-        Insets insets = buttonConstraints.insets;
-        new Insets(10, 10, 10, 10);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        backgroundLabel.add(titleLabel, buttonConstraints);
-        backgroundLabel.add(startGameButton, buttonConstraints);
-        backgroundLabel.add(infoButton, buttonConstraints);
-        backgroundLabel.add(quitButton, buttonConstraints);
-
-        // Load menu music
+        constraints.gridy = 0;
+        backgroundLabel.add(titleLabel, constraints);
+        constraints.gridy = 1;
+        backgroundLabel.add(startGameButton, constraints);
+        constraints.gridy = 2;
+        backgroundLabel.add(infoButton, constraints);
+        constraints.gridy = 3;
+        backgroundLabel.add(quitButton, constraints);
+        
         try {
             File menuMusicFile = new File("resources/sounds/menuMusic.wav");
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(menuMusicFile);
             menuMusic = AudioSystem.getClip();
             menuMusic.open(audioIn);
-            menuMusic.loop(Clip.LOOP_CONTINUOUSLY); // Loop the music
+            menuMusic.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -76,22 +78,31 @@ public class GameMenu {
         }
     }
 
+    private void showInfo() {
+        JFrame infoFrame = new JFrame("Game Info");
+        infoFrame.setSize(800, 600);
+        infoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        JTextArea infoTextArea = new JTextArea();
+        infoTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(infoTextArea);
+        
+        scrollPane.setPreferredSize(new Dimension(780, 580));
 
-    private void showInfo(){
-        if (Desktop.isDesktopSupported()){
-            try {
-                File readmeFile = new File("src/gameInfo.txt");
-                if (readmeFile.exists()) {
-                    Desktop.getDesktop().open(readmeFile);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "README file not found!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(frame, "Failed to open README file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            File readmeFile = new File("resources/gameInfo.txt");
+            if (readmeFile.exists()) {
+                FileReader reader = new FileReader(readmeFile);
+                infoTextArea.read(reader, "resources/gameInfo.txt");
+            } else {
+                JOptionPane.showMessageDialog(frame, "README file not found!", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(frame, "Desktop class is not supported on this platform.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Failed to open README file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
+        infoFrame.add(scrollPane);
+        infoFrame.pack();
+        infoFrame.setVisible(true);
     }
 }
