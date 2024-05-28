@@ -80,14 +80,12 @@ public class GameMenu {
 
     private void showInfo() {
         JFrame infoFrame = new JFrame("Game Info");
-        infoFrame.setSize(800, 600);
         infoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JTextArea infoTextArea = new JTextArea();
         infoTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(infoTextArea);
         
-        scrollPane.setPreferredSize(new Dimension(780, 580));
 
         try {
             File readmeFile = new File("resources/gameInfo.txt");
