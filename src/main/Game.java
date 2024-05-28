@@ -27,7 +27,7 @@ public class Game extends GameEngine {
     public long lastTime;
     public long currentTime;
     public HashMap<String, Image> imageBank;
-    public Set<Integer> keysPressed = new HashSet();
+    public Set<Integer> keysPressed = new HashSet<>();
 
     LevelManager lvlManager;
     private Level activeLevel;
@@ -49,7 +49,7 @@ public class Game extends GameEngine {
 
         this.setWindowSize(1280, 720);
         this.lvlManager = new LevelManager(this);
-        setActiveLevel(lvlManager.LEVEL_4);
+        setActiveLevel(lvlManager.DEMO);
     }
 
     public Level getActiveLevel() {
@@ -66,6 +66,13 @@ public class Game extends GameEngine {
         this.activeLevel = level;
         level.load();
         this.camera = new Camera(this, level.getPlayer());
+
+        // Manage the timer based on the level
+        if (level.equals(lvlManager.DEMO)) {
+            lvlManager.onTutorialComplete();
+        } else if (level.equals(lvlManager.END)) {
+            lvlManager.onLastLevelEnter();
+        }
     }
 
     public void update(double dt) {
@@ -74,11 +81,8 @@ public class Game extends GameEngine {
         timeSinceLastFrame = currentTime - lastTime;
         camera.update();
 
-
         if (!isPaused) {
             getActiveLevel().update(dt);
-
-
         }
     }
 
@@ -91,7 +95,7 @@ public class Game extends GameEngine {
         Player player = getActiveLevel().getPlayer();
         if(getActiveLevel().getPlayer().getHealth() <= 0){
             gameOver = true;
-            drawText(100,100,"You died",30);
+            drawText(100, 100, "You died", 30);
             getActiveLevel().reset();
             player.handleDeath();
         } else {
@@ -103,7 +107,7 @@ public class Game extends GameEngine {
     public void keyPressed(KeyEvent event) {
         this.keysPressed.add(event.getKeyCode());
 
-        if (event.getKeyCode() == 27) { //ESCAPE
+        if (event.getKeyCode() == 27) { // ESCAPE
             isPaused = !isPaused;
         }
 
@@ -117,7 +121,6 @@ public class Game extends GameEngine {
         this.keysPressed.remove(event.getKeyCode());
         if (event.getKeyCode() == 72) {
             camera.debugMode = !camera.debugMode;
-            //setActiveLevel(lvlManager.DEMO_2);
         }
 
         if (event.getKeyCode() == 65 || event.getKeyCode() == 68) {
@@ -145,35 +148,25 @@ public class Game extends GameEngine {
                 continue;
             }
 
-            imageBank.put(type.toString(),  loadImage(type.getFilePath()));
+            imageBank.put(type.toString(), loadImage(type.getFilePath()));
         }
     }
 
-    /*
-    *   This is where the image bank is loaded. Basically how it works is it uses a HashMap<String, Image> and it assigns
-    *   a string to an image object.
-    *
-    *   By doing it
-    * */
-    public void  loadCharacterImages() {
-        imageBank.put("player_run_0",  loadImage("resources/images/characters/run0.png"));
-        imageBank.put("player_run_1",  loadImage("resources/images/characters/run1.png"));
-        imageBank.put("player_run_2",  loadImage("resources/images/characters/run2.png"));
+    public void loadCharacterImages() {
+        imageBank.put("player_run_0", loadImage("resources/images/characters/run0.png"));
+        imageBank.put("player_run_1", loadImage("resources/images/characters/run1.png"));
+        imageBank.put("player_run_2", loadImage("resources/images/characters/run2.png"));
         imageBank.put("player_run_3", loadImage("resources/images/characters/run3.png"));
-        imageBank.put("player_jump_0",  loadImage("resources/images/characters/jump0.png"));
-        imageBank.put("player_jump_1",  loadImage("resources/images/characters/jump1.png"));
-        imageBank.put("player_jump_2",  loadImage("resources/images/characters/jump2.png"));
-        imageBank.put("player_jump_3",  loadImage("resources/images/characters/jump3.png"));
+        imageBank.put("player_jump_0", loadImage("resources/images/characters/jump0.png"));
+        imageBank.put("player_jump_1", loadImage("resources/images/characters/jump1.png"));
+        imageBank.put("player_jump_2", loadImage("resources/images/characters/jump2.png"));
+        imageBank.put("player_jump_3", loadImage("resources/images/characters/jump3.png"));
         imageBank.put("player_attack", Toolkit.getDefaultToolkit().createImage("resources/images/characters/attack.gif"));
-
-        imageBank.put("spot_light",  loadImage("resources/images/blocks/decorations/spot_light.png"));
-        imageBank.put("door",  loadImage(EntityType.DOOR.getFilePath()));
+        imageBank.put("spot_light", loadImage("resources/images/blocks/decorations/spot_light.png"));
+        imageBank.put("door", loadImage(EntityType.DOOR.getFilePath()));
         imageBank.put("player", loadImage(EntityType.PLAYER.getFilePath()));
-       // imageBank.put("plant_monster", loadImage(EntityType.PLANT_MONSTER.getFilePath()));
-        imageBank.put("stone_door",loadImage(EntityType.STONE_DOOR.getFilePath()));
-        //imageBank.put(EntityType.KEY.toString().toLowerCase(), loadImage(EntityType.KEY.getFilePath()));
-        //imageBank.put(EntityType.PLANT_MONSTER.toString().toLowerCase(),  loadImage(EntityType.PLANT_MONSTER.getFilePath()));
-        imageBank.put("key",  Toolkit.getDefaultToolkit().createImage("resources/images/keyy.gif"));
+        imageBank.put("stone_door", loadImage(EntityType.STONE_DOOR.getFilePath()));
+        imageBank.put("key", Toolkit.getDefaultToolkit().createImage("resources/images/keyy.gif"));
         imageBank.put("plant_monsterAttack", Toolkit.getDefaultToolkit().createImage("resources/images/plantAttack.gif"));
         imageBank.put("plant_monsterAttack_flipped", Toolkit.getDefaultToolkit().createImage("resources/images/plantAttack_flipped.gif"));
         imageBank.put("plant_monster", loadImage("resources/images/characters/plant_monster.png"));
@@ -181,9 +174,7 @@ public class Game extends GameEngine {
         imageBank.put("skull_head", loadImage("resources/images/characters/skull_head_frame0.png"));
         imageBank.put("gold_coin", loadImage(EntityType.GOLD_COIN.getFilePath() + "_frame0.png"));
         imageBank.put("bee", loadImage("resources/images/characters/bee/bee_idle_frame0.png"));
-        imageBank.put("snowFall",  Toolkit.getDefaultToolkit().createImage("resources/images/idea.gif"));
-
-
+        imageBank.put("snowFall", Toolkit.getDefaultToolkit().createImage("resources/images/idea.gif"));
 
         for (ParticleTypes particleType : ParticleTypes.values()) {
             imageBank.put(particleType.toString().toLowerCase(), loadImage(particleType.getFilePath()));
@@ -197,7 +188,7 @@ public class Game extends GameEngine {
     public static Image flipImageHorizontal(Image img) {
         AffineTransform tx = AffineTransform.getScaleInstance(-1.0, 1.0);
         tx.translate(-img.getWidth(null), 0.0);
-        AffineTransformOp op = new AffineTransformOp(tx, 1);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         return op.filter((BufferedImage) img, null);
     }
 
@@ -205,3 +196,4 @@ public class Game extends GameEngine {
         return camera;
     }
 }
+
