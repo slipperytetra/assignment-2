@@ -19,6 +19,7 @@ public class LevelManager {
     public Level LEVEL_3;
     public Level LEVEL_4;
     public Level FOREST;
+    public Level LEVEL_5;
 
     public LevelManager(Game engine) {
         this.engine = engine;
@@ -32,8 +33,10 @@ public class LevelManager {
         DEMO = new Level(this, 0, "resources/levels/level_demo.txt");
         DEMO_2 = new Level(this, 1, "resources/levels/level_demo_2.txt");
         LEVEL_3 = new Level(this, 2, "resources/levels/level_demo3.txt");
-        LEVEL_4 = new Level(this,3,"resources/levels/level4.txt");
+        LEVEL_4 = new Level(this,3,"resources/levels/level5.txt");
         FOREST = new Level(this,4,"resources/levels/level_forest.txt");
+        LEVEL_5 = new Level(this,5,"resources/levels/level5.txt");
+
 
 
         levels.put("level_demo", DEMO);

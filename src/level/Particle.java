@@ -73,6 +73,9 @@ public class Particle {
       }
     }
 
+
+
+
     public void render(Camera cam){
         double hitboxOffsetX = loc.getX() + offsetX + cam.centerOffsetX;
         double hitboxOffsetY = loc.getY() + offsetY + cam.centerOffsetY;

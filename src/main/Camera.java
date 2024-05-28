@@ -268,6 +268,10 @@ public class Camera {
         }
     }
     public void renderFX(){
+
+        if(game.getActiveLevel().getId() == 3){
+            game.drawImage(game.getTexture("snowFall"),0,0,game.width(),game.height());
+        }
         DEBUG_PARTICLES_ON_SCREEN = 0;
         for (Particle particle : game.getActiveLevel().getParticles()){
             particle.render(this);
@@ -278,6 +282,8 @@ public class Camera {
             //System.out.println("Draw bg");
             game.drawImage(game.imageBank.get("overlay"), 0, 0, game.width(), game.height());
         }
+
+
     }
 
     private void renderBackground() {

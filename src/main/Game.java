@@ -49,7 +49,7 @@ public class Game extends GameEngine {
 
         this.setWindowSize(1280, 720);
         this.lvlManager = new LevelManager(this);
-        setActiveLevel(lvlManager.FOREST);
+        setActiveLevel(lvlManager.LEVEL_5);
     }
 
     public Level getActiveLevel() {
@@ -181,6 +181,8 @@ public class Game extends GameEngine {
         imageBank.put("skull_head", loadImage("resources/images/characters/skull_head_frame0.png"));
         imageBank.put("gold_coin", loadImage(EntityType.GOLD_COIN.getFilePath() + "_frame0.png"));
         imageBank.put("bee", loadImage("resources/images/characters/bee/bee_idle_frame0.png"));
+        imageBank.put("snowFall",  Toolkit.getDefaultToolkit().createImage("resources/images/idea.gif"));
+
 
 
         for (ParticleTypes particleType : ParticleTypes.values()) {
