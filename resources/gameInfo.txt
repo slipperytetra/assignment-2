@@ -2,13 +2,13 @@
 
     Controls
 
-    W 	    : UP
-    A 	    : LEFT
-    S 	    : DOWN
-    D 	    : RIGHT
-    Q	    : ATTACK
+    W 	 : UP
+    A 	 : LEFT
+    S 	 : DOWN
+    D 	 : RIGHT
+    Q    : ATTACK
     SPACE	: JUMP
-    E	    : UNLOCK DOOR
+    E    : UNLOCK DOOR
 
 
 
