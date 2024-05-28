@@ -35,7 +35,8 @@ public enum BlockTypes {
     STONERMIDDLE("resources/images/blocks/STONERIGHTMIDDLE.png"),
     STONELCORNER("resources/images/blocks/STONELCORNER.png"),
     STONELMIDDLE("resources/images/blocks/STONELMIDDLE.png"),
-    SPIKEICE("resources/images/blocks/spikeIce.png");
+    SPIKEICE("resources/images/blocks/spikeIce.png"),
+    ARROW("resources/images/blocks/arrow.png");
 
 
 

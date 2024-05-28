@@ -202,16 +202,13 @@ public class Level {
         }
         if (keyLoc == null) {
             System.out.println("Warning: no key location specified.");
-            return;
         }
         if (doorLoc == null) {
             System.out.println("Warning: no door location specified.");
-            return;
         }
 
         System.out.println("Player: " + player.getLocation().toString());
-        System.out.println("Key: " + keyLoc.toString());
-        System.out.println("Door: " + doorLoc.toString());
+
 
         if (getBackgroundMusic() != null) {
             getManager().getEngine().startAudioLoop(getBackgroundMusic());
