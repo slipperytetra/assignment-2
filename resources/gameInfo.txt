@@ -2,13 +2,13 @@
 
     Controls
 
-    W 	: UP
-    A 	: LEFT
-    S 	: DOWN
-    D 	: RIGHT
-    Q	: ATTACK
+    W 	    : UP
+    A 	    : LEFT
+    S 	    : DOWN
+    D 	    : RIGHT
+    Q	    : ATTACK
     SPACE	: JUMP
-    E	: UNLOCK DOOR
+    E	    : UNLOCK DOOR
 
 
 
@@ -32,6 +32,6 @@
 
     Defeating enemies increases total score.
 
-    Floating Skull's CANNOT be destroyed.
+    Floating Skull's are not worth trying to fight!
 
     Avoid water/lava tiles - instant death.
