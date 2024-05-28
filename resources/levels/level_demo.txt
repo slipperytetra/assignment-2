@@ -1,8 +1,8 @@
 name: DEMO
-background: resources/images/bgidea.gif
-next_level: level4
-level_width: 30
-level_height: 30
+background: resources/images/bdidea.gif
+background_music: resources/sounds/jungle_synthetic.wav
+overlay: resources/images/night_filter.png
+next_level: forest
 level_data:
   [BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB]
   [B............................B]
