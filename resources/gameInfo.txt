@@ -1,0 +1,37 @@
+    Welcome to "", a Platformer designed to test the skill of all who try!
+
+    Controls
+
+    W 	: UP
+    A 	: LEFT
+    S 	: DOWN
+    D 	: RIGHT
+    Q	: ATTACK
+    SPACE	: JUMP
+    E	: UNLOCK DOOR
+
+
+
+    Objective:
+
+    Stay alive while exploring the level, avoiding or fighting enemies. Search for a key that unlocks access to the next level through a locked door!
+
+    If you die, player score will be cut by 50% and player will respawn at the start of the current level.
+
+    Finish all levels and aim to score as high as possible, in shortest amount of time!
+
+    HAVE FUN!
+
+
+
+    Tips:
+
+    Healing Hearts heal a player to full health.
+
+    Collecting Coins increase total score.
+
+    Defeating enemies increases total score.
+
+    Floating Skull's CANNOT be destroyed.
+
+    Avoid water/lava tiles - instant death.
