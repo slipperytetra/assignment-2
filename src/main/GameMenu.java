@@ -15,19 +15,20 @@ public class GameMenu {
     public GameMenu() {
         frame = new JFrame("Game Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280, 720);
+        frame.setSize(1280, 700);
 
         JLabel titleLabel = new JLabel("Our Game's Menu", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setOpaque(false);
 
-        ImageIcon backgroundIcon = new ImageIcon("resources/images/bgidea.gif");
-        backgroundLabel = new JLabel(backgroundIcon);
+        ImageIcon backgroundIcon = new ImageIcon("resources/images/bgVid.gif");
+        Image img = backgroundIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_DEFAULT);
+        backgroundLabel = new JLabel(new ImageIcon(img));
         frame.setContentPane(backgroundLabel);
         backgroundLabel.setLayout(new GridBagLayout());
 
-        JButton startGameButton = new JButton("Start Game");
+        JButton startGameButton = createButton("Start Game");
         startGameButton.addActionListener(e -> {
             stopMenuMusic();
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(startGameButton);
@@ -37,10 +38,10 @@ public class GameMenu {
             new Game().startGame();
         });
 
-        JButton infoButton = new JButton("Game Info");
+        JButton infoButton = createButton("Game Info");
         infoButton.addActionListener(e -> showInfo());
 
-        JButton quitButton = new JButton("Quit Game");
+        JButton quitButton = createButton("Quit Game");
         quitButton.addActionListener(e -> System.exit(0));
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -48,15 +49,27 @@ public class GameMenu {
         constraints.insets = new Insets(10, 10, 10, 10);
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
+        // Adding a vertical space component to push the title label lower
         constraints.gridy = 0;
-        backgroundLabel.add(titleLabel, constraints);
+        constraints.weighty = 0.2; // Adjust this value to push the title label lower
+        backgroundLabel.add(Box.createVerticalGlue(), constraints);
+
         constraints.gridy = 1;
-        backgroundLabel.add(startGameButton, constraints);
+        constraints.weighty = 0;
+        backgroundLabel.add(titleLabel, constraints);
+
         constraints.gridy = 2;
-        backgroundLabel.add(infoButton, constraints);
+        constraints.weighty = 1.0; // Use this to push the buttons to the bottom
+        backgroundLabel.add(Box.createVerticalGlue(), constraints);
+
         constraints.gridy = 3;
+        constraints.weighty = 0;
+        backgroundLabel.add(startGameButton, constraints);
+        constraints.gridy = 4;
+        backgroundLabel.add(infoButton, constraints);
+        constraints.gridy = 5;
         backgroundLabel.add(quitButton, constraints);
-        
+
         try {
             File menuMusicFile = new File("resources/sounds/menuMusic.wav");
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(menuMusicFile);
@@ -69,6 +82,13 @@ public class GameMenu {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(100, 40)); // Adjust the size as needed
+        button.setFont(new Font("Arial", Font.PLAIN, 18)); // Adjust the font size as needed
+        return button;
     }
 
     private void stopMenuMusic() {
@@ -85,7 +105,6 @@ public class GameMenu {
         JTextArea infoTextArea = new JTextArea();
         infoTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(infoTextArea);
-        
 
         try {
             File readmeFile = new File("resources/gameInfo.txt");
@@ -98,7 +117,7 @@ public class GameMenu {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Failed to open README file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         infoFrame.add(scrollPane);
         infoFrame.pack();
         infoFrame.setVisible(true);
