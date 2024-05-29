@@ -25,6 +25,7 @@ public class Bee extends Enemy {
     private boolean isAttacking, isDying;
     private Timer attackTimer, deathTimer;
     private Random random;
+    private Location initialLocation;
 
     public Bee(Level level, Location loc) {
         super(level, EntityType.BEE, loc, 25, 27);
@@ -36,6 +37,7 @@ public class Bee extends Enemy {
         this.isAttacking = false;
         this.isDying = false;
         this.random = new Random();
+        this.initialLocation = new Location(loc.getX(), loc.getY()); // Store the initial location for respawning
         setMaxHealth(10);
 
         loadFrames(); // Load idle frames
@@ -133,8 +135,7 @@ public class Bee extends Enemy {
         double projectileY = getLocation().getY() + getHeight() - 10; // Adjust 10 as needed to position at the bottom
 
         Location projectileLoc = new Location(projectileX, projectileY);
-        double speedX = -200; // Adjust projectile speed as needed
-        double speedY = 0; // Adjust projectile speed as needed
+        double speedX = -200;
         BeeStinger stinger = new BeeStinger(getLevel(), projectileLoc, speedX);
         getLevel().addEntity(stinger);
     }
@@ -146,6 +147,9 @@ public class Bee extends Enemy {
             updateAnimation(); // Ensure death animation updates during dying state
         } else {
             super.update(dt);
+        }
+        if (!isActive() && isShouldRespawn()) {
+            reset(); // Call reset if the Bee should respawn
         }
     }
 
@@ -190,9 +194,6 @@ public class Bee extends Enemy {
             cam.drawHealthBar(this, offsetX, offsetY - 50);
         }
     }
-
-
-
 
     // Update animation frame
     private void updateAnimation() {
@@ -265,6 +266,7 @@ public class Bee extends Enemy {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Bee.super.destroy();
+                    setShouldRespawn(true); // Set the flag to respawn
                 }
             });
             deathTimer.setRepeats(false);
@@ -278,6 +280,18 @@ public class Bee extends Enemy {
         super.setHealth(health);
         if (health <= 0 && !isDying) {
             destroy();
+        }
+    }
+
+    // Reset the bee to its initial state
+    @Override
+    public void reset() {
+        if (isShouldRespawn()) {
+            setLocation(initialLocation.getX(), initialLocation.getY()); // Reset the location to the initial spawn point
+            setHealth(getMaxHealth()); // Reset health to max health
+            setActive(true); // Reactivate the entity
+            setShouldRespawn(false); // Reset the respawn flag
+            isDying = false; // Reset the dying state
         }
     }
 }
