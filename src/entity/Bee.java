@@ -44,6 +44,7 @@ public class Bee extends Enemy {
         loadAttackFrames(); // Load attack frames
         loadDeathFrames(); // Load death frames
         setupAttackTimer(); // Setup attack timer
+        setShouldRespawn(true);
     }
 
     // Setup attack timer
@@ -292,6 +293,7 @@ public class Bee extends Enemy {
             setActive(true); // Reactivate the entity
             setShouldRespawn(false); // Reset the respawn flag
             isDying = false; // Reset the dying state
+            currentFrame = 0;
         }
     }
 }

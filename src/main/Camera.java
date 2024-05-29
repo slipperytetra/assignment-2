@@ -170,9 +170,8 @@ public class Camera {
         double localYDiff = healthBarLoc.getY();
 
         game.changeColor(Color.white);
-        game.drawText(50,35,"Health:",15);
         game.drawText(1180,50,"Key : ", 20);
-        game.drawText(150,35,"Score : " + player.getScore(), 20);
+        game.drawText(200,35,"Score : " + player.getScore(), 20);
 
         // Display the timer
         Duration elapsedTime = game.lvlManager.getElapsedTime();
