@@ -26,6 +26,7 @@ public class SkullHead extends Enemy {
     private Random random;
     private double initialPhase;
     private double movementTime;
+    private Location initialLocation; // Added to store initial spawn location
 
     public SkullHead(Level level, Location loc) {
         super(level, EntityType.SKULL_HEAD, loc, 30, 28);
@@ -36,6 +37,7 @@ public class SkullHead extends Enemy {
 
         this.random = new Random();
         this.startY = loc.getY();
+        this.initialLocation = new Location(loc.getX(), loc.getY()); // Store the initial location for respawning
         this.setDamage(25); // Set the damage amount
 
         this.lastAttackTime = 0;
@@ -53,7 +55,7 @@ public class SkullHead extends Enemy {
             String path = EntityType.SKULL_HEAD.getFilePath() + "_frame" + i + ".png";
             BufferedImage frame = loadImage(path);
             if (frame != null) {
-                frames.add((BufferedImage) main.Game.flipImageHorizontal(frame)); // Add flipped frames
+                frames.add((BufferedImage) Game.flipImageHorizontal(frame)); // Add flipped frames
             } else {
                 System.err.println("Error: Could not load frame from path: " + path);
             }
@@ -133,6 +135,16 @@ public class SkullHead extends Enemy {
         }
     }
 
+    // Update enemy state
+    @Override
+    public void update(double dt) {
+        if (!isActive() && isShouldRespawn()) {
+            reset(); // Call reset if the SkullHead should respawn
+        } else {
+            super.update(dt);
+        }
+    }
+
     // Render the enemy
     @Override
     public void render(Camera cam) {
@@ -156,8 +168,6 @@ public class SkullHead extends Enemy {
         }
     }
 
-
-
     // Get the current frame image
     @Override
     public Image getActiveFrame() {
@@ -180,5 +190,19 @@ public class SkullHead extends Enemy {
     @Override
     public void destroy() {
         super.destroy();
+        setShouldRespawn(true); // Set the flag to respawn
+    }
+
+    // Reset the SkullHead to its initial state
+    @Override
+    public void reset() {
+        if (isShouldRespawn()) {
+            setLocation(initialLocation.getX(), initialLocation.getY()); // Reset the location to the initial spawn point
+            setHealth(getMaxHealth()); // Reset health to max health
+            setActive(true); // Reactivate the entity
+            setShouldRespawn(false); // Reset the respawn flag
+            currentFrame = 0; // Reset the animation frame
+            movementTime = 0; // Reset the movement time
+        }
     }
 }
