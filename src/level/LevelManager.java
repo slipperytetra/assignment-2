@@ -18,7 +18,7 @@ public class LevelManager {
     private Instant startTime;
     private Instant endTime;
     private boolean timerRunning;
-    private Duration elapsedTime; 
+    private Duration elapsedTime;
 
     // Define the level variable name.
     public Level DEMO;

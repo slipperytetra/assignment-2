@@ -12,7 +12,8 @@ public enum EntityType {
     GOLD_COIN("resources/images/goldcoin/gold_coin"),
     HEART("resources/images/heart.gif"),
     BEE("resources/images/characters/bee/bee_idle"),
-    BEE_STINGER("resources/images/characters/bee/bee_stinger.png");
+    BEE_STINGER("resources/images/characters/bee/bee_stinger.png"),
+    CHECKPOINT("resources/images/characters/checkPoint.png");
 
 
     private final String filePath;

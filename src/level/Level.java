@@ -170,6 +170,9 @@ public class Level {
                     } else if (type == EntityType.BEE) {
                         Bee bee = new Bee(this, spawnLoc);
                         addEntity(bee);
+                    }else if (type == EntityType.CHECKPOINT) {
+                        Checkpoint checkpoint = new Checkpoint(this, spawnLoc);
+                        addEntity(checkpoint);
                     }
 
                     if (entity != null) {
@@ -260,6 +263,10 @@ public class Level {
                 entity.reset();
             }
         }
+    }
+
+    public void setSpawn(Location location){
+        spawnPoint = location;
     }
 
 
