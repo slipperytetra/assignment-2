@@ -184,9 +184,10 @@ public class Camera {
             game.drawImage(game.imageBank.get("key"), 1230, 20, 50, 50);
         }
 
-        drawHealthBar(player, localXDiff, localYDiff);
-        game.changeColor(Color.red);
-        game.drawText(localXDiff + 50, localYDiff, String.valueOf(player.getHealth()), 20);
+        drawHealthBar(player, localXDiff + 18, localYDiff - 7);
+        game.drawImage(game.getTexture("ui_heart"), localXDiff - 19, localYDiff - 19, 38, 38);
+        game.changeColor(Color.BLACK);
+        game.drawBoldText(localXDiff + 52, localYDiff + 6, String.valueOf(player.getHealth()), 15);
 
         if (debugMode) { //Press 'H' to enable
             game.changeColor(Color.yellow);
