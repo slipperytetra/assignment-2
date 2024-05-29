@@ -26,6 +26,8 @@
 
     Tips:
 
+    Checkpoints are represented by Save Icons.
+
     Healing Hearts heal a player to full health.
 
     Collecting Coins increase total score.
