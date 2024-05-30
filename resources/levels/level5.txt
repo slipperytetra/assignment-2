@@ -2,7 +2,7 @@ name:level_5
 background:resources/images/level1.gif
 background_music: resources/sounds/cityinnt.wav
 overlay: resources/images/night_filter.png
-next_level:end_level
+next_level: end
 level_data:
   [BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB...........]
   [B................................................................................................................B]

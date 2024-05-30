@@ -2,7 +2,7 @@ name: LEVEL_4
 background: resources/images/snow.png
 background_music: resources/sounds/snow.wav
 overlay: resources/images/night_filter.png
-next_level: level_demo3
+next_level: nap
 level_data:
   [BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB]
   [..........................................................................................................................................]

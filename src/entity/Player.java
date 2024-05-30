@@ -382,4 +382,6 @@ public class Player extends EntityLiving {
     public int getScore() {
         return score;
     }
+
+
 }

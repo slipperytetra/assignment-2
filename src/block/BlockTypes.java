@@ -36,7 +36,10 @@ public enum BlockTypes {
     STONELCORNER("resources/images/blocks/STONELCORNER.png"),
     STONELMIDDLE("resources/images/blocks/STONELMIDDLE.png"),
     SPIKEICE("resources/images/blocks/spikeIce.png"),
-    ARROW("resources/images/blocks/arrow.png");
+    ARROW("resources/images/blocks/arrow.png"),
+    WATERFALL("resources/images/blocks/water2.png"),
+    WATERFALLBOTTOM("resources/images/blocks/water2b.png"),
+    BLACK("resources/images/blocks/black.png");
 
 
 

@@ -28,7 +28,10 @@ public enum DecorationTypes {
     SNOW_BUSH("resources/images/blocks/decorations/snowBush.png"),
     CAVEINSIDE("resources/images/blocks/decorations/cave.png"),
     ICEBERG("resources/images/blocks/decorations/iceberg.png"),
-    ICEICLES("resources/images/blocks/decorations/ice.png");
+    ICEICLES("resources/images/blocks/decorations/ice.png"),
+    WINDOW("resources/images/blocks/decorations/window.png"),
+    WALL("resources/images/blocks/decorations/wall.png"),
+    BARREL("resources/images/blocks/decorations/barrel.png");
 
     private final String getFilePath;
     private final double scale;

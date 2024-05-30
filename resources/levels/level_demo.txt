@@ -1,5 +1,5 @@
 name: DEMO
-background: resources/images/bdidea.gif
+background: resources/images/blackground.jpg
 background_music: resources/sounds/jungle_synthetic.wav
 overlay: resources/images/night_filter.png
 next_level: forest
@@ -11,29 +11,39 @@ level_data:
   [B............................B]
   [B............................B]
   [B............................B]
-  [B.............B.B............B]
   [B............................B]
   [B............................B]
   [B............................B]
-  [B...........E...L............B]
-  [B........GGGGGGGL............B]
-  [B........XXXXXXXL............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B...............L............B]
-  [B.........L.....L............B]
-  [B.........LGGGGGG............B]
-  [B.........LXXXXXX............B]
-  [B.........LXXXXXX............B]
-  [B.........LXXXXXX............B]
-  [B....P....LXXXXXX.....K...D..B]
-  [GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG]
-  [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [B.............K........................B]
+  [B............GGG....p.E...L............B]
+  [B............XXX...GGGGGGGL............B]
+  [B..................XXXXXXXL............B]
+  [B.........................L............B]
+  [B.........................L............B]
+  [B.........................L............B]
+  [B.........................L............B]
+  [B.........................L............B]
+  [B.........................L............B]
+  [B.........................L............B]
+  [B.....................S...L............B]
+  [B...................L...6.L............B]
+  [B...................LGGGGGG............B]
+  [B...................LXXXXXX............B]
+  [B...................LX4XX4X............B]
+  [B...................LXXXXXX............B]
+  [B..P.6.........p6...LXXXXXX...p.C...D..B]
+  [GGGGGGGGWWWGGGGGGGGGGXXXXXXGGGGGGGGGGGGG]
+  [XXXXXXXXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XX4XX4XXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXXXXXXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXXXXXXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXX4XXXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXXXXXXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [X4XXXXXXwwwXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXXXXXX222XXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXXXXXX333XXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+  [XXXXXXXX333XXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+
 keymap:
   P: PLAYER
   D: DOOR
@@ -46,3 +56,14 @@ keymap:
   W: WATER_TOP
   G: STONE_FLOOR
   X: STONE_FILLER
+  S: CHECKPOINT
+  C: GOLD_COIN
+  W: WATERFALL
+  w: WATER_BOTTOM
+  p: LAMP_POST
+  Z: OLD_BRICK_WALL
+  2: WATERFALLBOTTOM
+  3: BLACK
+  4: WINDOW
+  5: WALL
+  6: BARREL

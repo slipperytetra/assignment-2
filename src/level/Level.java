@@ -138,7 +138,10 @@ public class Level {
                         block = new BlockLiquid(type, spawnLoc);
                     } else if (type == BlockTypes.LAVA) {
                         block = new BlockLiquid(type, spawnLoc);
+                    }else if (type == BlockTypes.WATERFALL) {
+                        block = new BlockLiquid(type, spawnLoc);
                     }
+
 
                     grid.setBlock(x, relY, block);
                 }
@@ -274,6 +277,8 @@ public class Level {
     public Player getPlayer() {
         return player;
     }
+
+
 
     public String getName() {
         return name;

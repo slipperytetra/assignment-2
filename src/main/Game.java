@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Game extends GameEngine {
+public class  Game extends GameEngine {
     public static int BLOCK_SIZE = 32;
     private boolean gameOver;
     public boolean isPaused;
@@ -49,7 +49,7 @@ public class Game extends GameEngine {
 
         this.setWindowSize(1280, 720);
         this.lvlManager = new LevelManager(this);
-        setActiveLevel(lvlManager.LEVEL_4);
+        setActiveLevel(lvlManager.DEMO);
     }
 
     public Level getActiveLevel() {

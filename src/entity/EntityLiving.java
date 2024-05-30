@@ -99,7 +99,7 @@ public abstract class EntityLiving extends Entity {
         //System.out.println(target.getHealth());
         if (target.getHealth() <= 0){
             target.destroy();
-            player.score = player.score + 20;
+            player.score = Player.score + 20;
 
         }
     }

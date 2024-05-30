@@ -27,6 +27,7 @@ public class LevelManager {
     public Level LEVEL_4;
     public Level FOREST;
     public Level LEVEL_5;
+    public Level ROB;
     public Level END;
 
 
@@ -41,22 +42,22 @@ public class LevelManager {
         // Assign the level name to your level. This points to your level's file under resources/levels.
         // Format: *NAME* = new level.Level(id, spawn_location, key_location)
         DEMO = new Level(this, 0, "resources/levels/level_demo.txt");
-        DEMO_2 = new Level(this, 1, "resources/levels/level_demo_2.txt");
-        LEVEL_3 = new Level(this, 2, "resources/levels/level_demo3.txt");
+        LEVEL_3 = new Level(this, 2, "resources/levels/nap_level.txt");
         LEVEL_4 = new Level(this,3,"resources/levels/zyra_map.txt");
         FOREST = new Level(this,4,"resources/levels/level_forest.txt");
         LEVEL_5 = new Level(this,5,"resources/levels/level5.txt");
         END = new Level(this,6,"resources/levels/endLevel.txt");
+        ROB = new Level(this,7,"resources/levels/rob_level.txt");
 
 
 
 
         levels.put("level_demo", DEMO);
-        levels.put("level_demo_2", DEMO_2);
-        levels.put("level_demo3", LEVEL_3);
-        levels.put("level4", LEVEL_4);
+        levels.put("nap", LEVEL_3);
+        levels.put("zyra", LEVEL_4);
         levels.put("forest", FOREST);
-        levels.put("level_5", LEVEL_5);
+        levels.put("zyra2", LEVEL_5);
+        levels.put("rob", ROB);
         levels.put("end", END);
 
         /*
@@ -65,12 +66,15 @@ public class LevelManager {
          *  can walk past it or if static is set to true, then the text will show at a constant position on the screen
          *  and follow the player as they move.
          */
-        DEMO.addTextMessage(new TextMessage(new Location(10, 100), "Welcome to our game!", 50, false, Color.black));
-        DEMO.addTextMessage(new TextMessage(new Location(10, 200), "Press 'D' to move right and 'A' to move left.", 20, false, Color.black));
-        DEMO.addTextMessage(new TextMessage(new Location(10, 330), "Hold 'Q' to attack with your sword.", 20, false, Color.black));
-        DEMO.addTextMessage(new TextMessage(new Location(10, 360), "Press 'Space' to jump!", 20, false, Color.black));
-        DEMO.addTextMessage(new TextMessage(new Location(10, 380), "Grab key to unlock door to proceed to next level!", 20, false, Color.black));
-        DEMO.addTextMessage(new TextMessage(new Location(570, 670), "Press 'E' on door to enter!", 20, false, Color.black));
+        DEMO.addTextMessage(new TextMessage(new Location(0, 100), "Welcome to our game!", 50, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(0, 700), "Press 'D' to move right and 'A' to move left.", 18, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(500, 200), "Hold 'Q' to attack with your sword.", 18, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(0, 750), "Press 'Space' to jump!", 18, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(250, 750), "Avoid the water!!", 18, false, Color.red));
+        DEMO.addTextMessage(new TextMessage(new Location(0, 280), "Grab key to unlock door to proceed to next level!", 15, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(950, 670), "Press 'E' on door to enter!", 20, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(950, 720), "Pick up coins for extra score!", 18, false, Color.white));
+        DEMO.addTextMessage(new TextMessage(new Location(440, 600),"This is a checkpoint, you will respawn on these if you die",15,true,Color.white));
     }
 
         // Method to start the timer

@@ -1,7 +1,7 @@
 name: nap_level
 background: resources/images/forest.png
 background_music: resources/sounds/jungle_synthetic.wav
-next_level: level4
+next_level: rob
 level_data:
   [5GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG1...............................................................................B]
   [5GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG1...............................................................................B]

@@ -2,7 +2,7 @@ name: FOREST
 background: resources/images/forest.png
 background_music: resources/sounds/jungle_synthetic.wav
 overlay: resources/images/night_filter.png
-next_level: level4
+next_level: zyra
 level_data:
   [BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB]
   [...................................................................................................................................................B]

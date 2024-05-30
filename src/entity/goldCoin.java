@@ -20,6 +20,7 @@ public class goldCoin extends Entity {
     private long lastFrameTime, frameDuration;
     private boolean collected;
     private Clip coinSound;
+    Player player;
 
     // Constructor
     public goldCoin(Level level, Location loc) {
@@ -117,6 +118,7 @@ public class goldCoin extends Entity {
     // Collect the coin
     public void collect() {
         collected = true;
+        Player.score = Player.score + 30;
         if(coinSound != null){
             coinSound.setFramePosition(0);
             coinSound.start(); // Play coin sound
