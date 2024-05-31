@@ -415,4 +415,8 @@ public class Level {
     public void setBackgroundMusic(GameEngine.AudioClip backgroundMusic) {
         this.backgroundMusic = backgroundMusic;
     }
+    
+    public void clearBeeStingers() {
+        entities.removeIf(entity -> entity instanceof BeeStinger);
+    }
 }
