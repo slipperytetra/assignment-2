@@ -132,6 +132,9 @@ public class Bee extends Enemy {
 
     // Shoot projectile at the player
     private void shootProjectile() {
+        Game game = getLevel().getManager().getEngine();
+        if (!game.isPlayerAlive()) return; // Check if the player is alive
+
         double projectileX = getLocation().getX();
         double projectileY = getLocation().getY() + getHeight() - 10; // Adjust 10 as needed to position at the bottom
 
@@ -140,6 +143,7 @@ public class Bee extends Enemy {
         BeeStinger stinger = new BeeStinger(getLevel(), projectileLoc, speedX);
         getLevel().addEntity(stinger);
     }
+
 
     // Update enemy state
     @Override
