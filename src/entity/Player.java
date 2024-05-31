@@ -108,10 +108,6 @@ public class Player extends EntityLiving {
         checkGoldCoinCollisions(getLevel().getManager().getEngine());
     }
 
-    public void incrementScore(){
-        //score += 10;
-    }
-
     // New method to check for collisions with gold coins
     public void checkGoldCoinCollisions(Game game) {
         ArrayList<Entity> entities = getLevel().getEntities();
@@ -120,7 +116,6 @@ public class Player extends EntityLiving {
                 goldCoin coin = (goldCoin) entity;
                 if (!coin.isCollected() && getCollisionBox().collidesWith(coin.getCollisionBox())) {
                     coin.collect();
-                    incrementScore(); // Increment score by 1 for each coin collected
                 }
             }
         }
