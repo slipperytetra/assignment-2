@@ -1,422 +1,390 @@
-package level;
+package entity;
 
-import block.*;
-import block.decorations.*;
-import entity.*;
-import main.*;
+import block.BlockClimbable;
+import block.BlockTypes;
+import level.Level;
+import level.ParticleTypes;
+import main.Camera;
+import main.Game;
+import main.Location;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Set;
 
-public class Level {
-    private Player player;
+public class Player extends EntityLiving {
+    private JProgressBar healthBar;
+    private boolean isJumping;
+    private boolean hasKey;
 
-    private int id;
-    private int sizeWidth;
-    private int sizeHeight;
-    private int textCounter;
-    private final String levelDoc;
-    private int currentLine;
+    private Timer runAnimationTimer;
+    private int runFrameIndex;
 
-    private String name;
-    private String nextLevel;
-    private String overlay;
-    private String backgroundImgFilePath;
-    private String backgroundmusicFilePath;
-    private GameEngine.AudioClip backgroundMusic;
+    public Timer jumpAnimationTimer;
+    private int jumpFrameIndex;
+    private double timeJumping;
+    private double maxJumpTime = 0.20;
+    public static int score;//seconds
 
-    private BlockGrid grid;
-    private LevelManager manager;
+    private double runParticleTimer;
+    private double RUN_PARTICLE_FREQUENCY = 0.075;
+    private Clip runningSound;
+    private Location initialSpawnLocation;
 
-    private Location spawnPoint;
-    private Location keyLoc;
-    private Location doorLoc;
+    Image gifImage;
+    Image plantAttack;
+    Image gifImage2;
+    Image level1;
 
-    private ArrayList<Decoration> decorations;
-    private ArrayList<FakeLightSpot> spotLights;
-    private ArrayList<Entity> entities;
-    private ArrayList<Particle> particles;
-    private ArrayList<String> lines;
-
-    private HashMap<Integer, TextMessage> textMessages;
-    private HashMap<Character, BlockTypes> blockKeyMap;
-    private HashMap<Character, EntityType> entityKeyMap;
-    private HashMap<Character, DecorationTypes> decorationKeyMap;
-
-    /*
-    *   The purpose of the level class is to extract and store data from level.txt files.
-    *
-    *   It reads each character after level_data and stores blocks into the level's BlockGrid
-    *   based on the keycodes assigned in the txt file.
-    *
-    *   FOr entities and decorations, they are stored into the appropriate lists.
-    * */
-
-    public Level(LevelManager manager, int id, String levelDoc) {
-        this.manager = manager;
-        this.id = id;
-        this.levelDoc = levelDoc;
-        this.lines = new ArrayList<>();
-        this.entities = new ArrayList<>();
-        this.decorations = new ArrayList<>();
-        this.spotLights = new ArrayList<>();
-        this.particles = new ArrayList<>();
-        this.textMessages = new HashMap<>();
-
-        this.blockKeyMap = new HashMap<>();
-        this.entityKeyMap = new HashMap<>();
-        this.decorationKeyMap = new HashMap<>();
-
+    public Player(Level level, Location loc) {
+        super(EntityType.PLAYER, level, loc, 19, 29);
+        this.initialSpawnLocation = new Location(loc.getX(), loc.getY());
+        setHitboxColor(Color.cyan);
+        setMaxHealth(100);
+        setDamage(5);
+        setHealth(getMaxHealth());
+        setDirectionY(1);
+        initRunningSound();
         init();
     }
 
     public void init() {
-        File file = new File(levelDoc);
-        try {
-            Scanner fileReader = new Scanner(file);
-            int lineNum = 0;
-            while (fileReader.hasNextLine()) {
-                String line = fileReader.nextLine();
-                lines.add(line.replaceAll(" ", "").replaceAll(":", "").replaceAll("\\[", "").replaceAll("\\]", ""));
-                if (line.contains("keymap:")) {
-                    sizeHeight = lineNum - 8;
-                }
-                lineNum++;
+        gifImage = Toolkit.getDefaultToolkit().createImage("resources/images/keyy.gif");
+        plantAttack = Toolkit.getDefaultToolkit().createImage("resources/images/plantAttack.gif");
+
+        gifImage2 = Toolkit.getDefaultToolkit().createImage("resources/images/keyy.gif");
+        level1 = Toolkit.getDefaultToolkit().createImage("resources/images/level1.gif");
+
+        setHitSound(getLevel().getManager().getEngine().loadAudio("resources/sounds/hitSound.wav"));
+        setAttackSound(getLevel().getManager().getEngine().loadAudio("resources/sounds/attackSound.wav"));
+
+        this.healthBar = new JProgressBar(0, getMaxHealth());
+        this.healthBar.setBounds(100, 25, 100, 10); // Adjust position and size as needed
+        this.healthBar.setForeground(Color.RED); // Set the color
+        this.healthBar.setValue(getMaxHealth()); // Set initial health
+        this.healthBar.setStringPainted(true); // Show health value
+
+        this.runAnimationTimer = new Timer(100, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                runFrameIndex = (runFrameIndex + 1) % 4;
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't locate file!");
-            return;
-        }
+        });
 
-
-        name = lines.get(0).substring("name".length());
-        backgroundImgFilePath = lines.get(1).substring("background".length());
-        backgroundmusicFilePath = lines.get(2).substring("background_music".length());
-        overlay = lines.get(3).substring("overlay".length());
-        nextLevel = lines.get(4).substring("next_level".length());
-
-        currentLine = 8;
-        for (int i = currentLine; i < sizeHeight; i++) {
-            sizeWidth = Math.max(sizeWidth, lines.get(i).length());
-        }
-        this.grid = new BlockGrid(sizeWidth, sizeHeight);
-    }
-
-    public void load() {
-        System.out.println("Loading level '" + getName() + "'");
-        int relY = 0;
-        for (int y = currentLine + sizeHeight; y < lines.size(); y++) { // Assign character codes to types
-            String line = lines.get(y);
-            char key = line.charAt(0);
-            String type = line.substring(1);
-            assignKeyToMap(key, type);
-        }
-
-        for (int y = currentLine; y < sizeHeight + currentLine; y++) { // Place objects into the world via BlockGrid and lists
-            String line = lines.get(y);
-            for (int x = 0; x < line.length(); x++) {
-                char key = line.charAt(x);
-                double spawnX = x * Game.BLOCK_SIZE;
-                double spawnY = relY * Game.BLOCK_SIZE;
-                Location spawnLoc = new Location(spawnX, spawnY);
-
-                if (blockKeyMap.containsKey(key)) {
-                    BlockTypes type = blockKeyMap.get(key);
-                    Block block = new BlockSolid(blockKeyMap.get(key), spawnLoc);
-                    if (type == BlockTypes.VOID) {
-                        block = new BlockVoid(spawnLoc);
-                    } else if (type == BlockTypes.LADDER) {
-                        block = new BlockClimbable(type, spawnLoc);
-                    }else if (type == BlockTypes.ROPE) {
-                        block = new BlockClimbable(type, spawnLoc);
-                    } else if (type == BlockTypes.WATER_TOP) {
-                        block = new BlockLiquid(type, spawnLoc);
-                    } else if (type == BlockTypes.WATER_BOTTOM) {
-                        block = new BlockLiquid(type, spawnLoc);
-                    } else if (type == BlockTypes.LAVA) {
-                        block = new BlockLiquid(type, spawnLoc);
-                    }else if (type == BlockTypes.WATERFALL) {
-                        block = new BlockLiquid(type, spawnLoc);
-                    }
-
-
-                    grid.setBlock(x, relY, block);
-                }
-
-                if (entityKeyMap.containsKey(key)) {
-                    EntityType type = entityKeyMap.get(key);
-                    Entity entity = null;
-                    if (type == EntityType.PLAYER) {
-                        player = new Player(this, spawnLoc);
-                        double heightDiff = player.getLocation().getY() - (player.getHeight() - Game.BLOCK_SIZE);
-                        spawnPoint = new Location(player.getLocation().getX(), heightDiff);
-                        player.setLocation(player.getLocation().getX(), heightDiff);
-                    } else if (type == EntityType.DOOR) {
-                        doorLoc = new Location(spawnLoc.getX(), spawnLoc.getY());
-                        entity = new Door(this, spawnLoc);
-                    } else if (type == EntityType.HEART) {
-                        entity = new Heart(this, spawnLoc);
-                    } else if (type == EntityType.PLANT_MONSTER) {
-                        entity = new EnemyPlant(this, spawnLoc);
-                    } else if (type == EntityType.KEY) {
-                        keyLoc = new Location(spawnLoc.getX(), spawnLoc.getY());
-                        entity = new Key(this, spawnLoc);
-                    } else if (type == EntityType.SKULL_HEAD) {
-                        SkullHead skullHead = new SkullHead(this, spawnLoc);
-                        addEntity(skullHead);
-                    } else if (type == EntityType.GOLD_COIN) {
-                        goldCoin coin = new goldCoin(this, spawnLoc);
-                        addEntity(coin);
-                    } else if (type == EntityType.BEE) {
-                        Bee bee = new Bee(this, spawnLoc);
-                        addEntity(bee);
-                    }else if (type == EntityType.CHECKPOINT) {
-                        Checkpoint checkpoint = new Checkpoint(this, spawnLoc);
-                        addEntity(checkpoint);
-                    }
-
-                    if (entity != null) {
-                        double heightDiff = entity.getLocation().getY() - (entity.getCollisionBox().getHeight() - Game.BLOCK_SIZE);
-                        entity.setLocation(entity.getLocation().getX(), heightDiff);
-                        addEntity(entity);
-                    }
-                }
-
-                if (decorationKeyMap.containsKey(key)) {
-                    DecorationTypes type = decorationKeyMap.get(key);
-                    addDecoration(type, spawnLoc);
+        this.jumpAnimationTimer = new Timer(75, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (jumpFrameIndex < 3) {
+                    jumpFrameIndex++;
                 }
             }
-
-            relY++;
-        }
-        if (!backgroundImgFilePath.isEmpty()) {
-            getManager().getEngine().imageBank.put("background", Toolkit.getDefaultToolkit().createImage(backgroundImgFilePath));
-        }
-        if (!overlay.isEmpty()) {
-            getManager().getEngine().imageBank.put("overlay", Toolkit.getDefaultToolkit().createImage(overlay));
-        }
-        if (!backgroundmusicFilePath.isEmpty()) {
-            backgroundMusic = getManager().getEngine().loadAudio(backgroundmusicFilePath);
-        }
-        if (player == null) {
-            System.out.println("Warning: no player location specified.");
-            return;
-        }
-        if (keyLoc == null) {
-            System.out.println("Warning: no key location specified.");
-        }
-        if (doorLoc == null) {
-            System.out.println("Warning: no door location specified.");
-        }
-
-        System.out.println("Player: " + player.getLocation().toString());
-
-
-        if (getBackgroundMusic() != null) {
-            getManager().getEngine().startAudioLoop(getBackgroundMusic());
-        }
+        });
     }
-
 
     public void update(double dt) {
-        getPlayer().playerMovement(getManager().getEngine().keysPressed);
-        getPlayer().update(dt);
+        super.update(dt);
+        animateCharacter();
+        if (runParticleTimer < RUN_PARTICLE_FREQUENCY) {
+            runParticleTimer += 1 * dt;
+        }
 
-        // Using Iterators so that objects can be removed dynamically.
-        Iterator<Entity> iter = getEntities().iterator();
-        while (iter.hasNext()) {
-            Entity entity = iter.next();
-            if (entity.isActive()) {
-                if (entity.getCollisionBox().collidesWith(getManager().getEngine().getCamera().getCollisionBox())) {
-                    entity.update(dt);
+        if  (runParticleTimer >= RUN_PARTICLE_FREQUENCY) {
+            if(isMovingHorizontally() && isOnGround()){
+                double partVelX = 0.75;
+                double partVelY = -0.5;
+                if (isFlipped()) {
+                    partVelX *= -1;
+                }
+
+                getLevel().spawnParticle(ParticleTypes.CLOUD, getLocation().getX(), getLocation().getY() + 48, partVelX, partVelY);
+                runParticleTimer = 0;
+            }
+        }
+        checkGoldCoinCollisions(getLevel().getManager().getEngine());
+    }
+
+    public void incrementScore(){
+        //score += 10;
+    }
+
+    // New method to check for collisions with gold coins
+    public void checkGoldCoinCollisions(Game game) {
+        ArrayList<Entity> entities = getLevel().getEntities();
+        for (Entity entity : entities) {
+            if (entity instanceof goldCoin) {
+                goldCoin coin = (goldCoin) entity;
+                if (!coin.isCollected() && getCollisionBox().collidesWith(coin.getCollisionBox())) {
+                    coin.collect();
+                    incrementScore(); // Increment score by 1 for each coin collected
+                }
+            }
+        }
+    }
+
+    public boolean hasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
+    }
+
+
+    @Override
+    public void processMovement(double dt) {
+        moveX = getDirectionX() * (speed * dt);
+        moveY = getDirectionY() * (speed * dt);
+
+        moveX(moveX);
+        moveY(moveY);
+
+        if (isJumping()) {
+            setDirectionY(-1.5);
+            timeJumping += 1 * dt;
+
+            if (timeJumping > maxJumpTime) {
+                this.setJumping(false);
+                this.setDirectionY(0);
+                this.timeJumping = 0;
+            }
+            return;
+        }
+
+        if (isFalling() && !canClimb()) {
+            if (fallAccel > 0) {
+                fallAccel *= fallSpeedMultiplier;
+                setDirectionY(1 * fallAccel);
+            }
+        } else {
+            fallAccel = 1;
+            setDirectionY(0);
+        }
+    }
+
+    public boolean isJumping() {
+        return isJumping;
+    }
+
+    public void setJumping(boolean isJumping) {
+        this.isJumping = isJumping;
+    }
+
+    @Override
+    public void render(Camera cam) {
+        double playerOffsetX = getLocation().getX() + cam.centerOffsetX;
+        double playerOffsetY = getLocation().getY() + cam.centerOffsetY;
+        Game game = getLevel().getManager().getEngine();
+
+        if (isAttacking()) {
+            playerOffsetX = playerOffsetX - 31;
+            playerOffsetY = playerOffsetY - 8;
+        }
+
+        game.drawImage(getActiveFrame(), playerOffsetX, playerOffsetY, getWidth(), getHeight());
+
+        if (cam.debugMode) {
+            game.changeColor(Color.magenta);
+
+            if (getBlockBelowEntityLeft() != null) {
+                game.drawRectangle(getBlockBelowEntityLeft().getLocation().getX() + cam.centerOffsetX, getBlockBelowEntityLeft().getLocation().getY() + cam.centerOffsetY, Game.BLOCK_SIZE, Game.BLOCK_SIZE);
+            }
+
+            if (getBlockBelowEntityRight() != null) {
+                game.drawRectangle(getBlockBelowEntityRight().getLocation().getX() + cam.centerOffsetX, getBlockBelowEntityRight().getLocation().getY() + cam.centerOffsetY, Game.BLOCK_SIZE, Game.BLOCK_SIZE);
+            }
+
+            double hitBoxOffsetX = getCollisionBox().getLocation().getX() + cam.centerOffsetX;
+            double hitBoxOffsetY = getCollisionBox().getLocation().getY() + cam.centerOffsetY;
+            game.changeColor(getHitboxColor());
+            game.drawRectangle(hitBoxOffsetX, hitBoxOffsetY, getCollisionBox().getWidth(), getCollisionBox().getHeight());
+        }
+    }
+
+    public void jump() {
+        this.isJumping = true;
+        this.jumpFrameIndex = 0;
+        this.jumpAnimationTimer.start();
+        this.timeJumping = 0;
+    }
+
+    private void initRunningSound() {
+        try {
+            File soundFile = new File("resources/sounds/runningSound.wav");
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+            runningSound = AudioSystem.getClip();
+            runningSound.open(audioInputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playerMovement(Set<Integer> keysPressed) {
+        if (keysPressed.contains(32)) {//SPACE
+            if (!isJumping() && !isAttacking() && (isOnGround() || canClimb())) {
+                jump();
+            }
+        }
+        if (keysPressed.contains(87)) {//W
+            if (canClimb() && getBlockAtLocation(0, -1).getType() != BlockTypes.VOID) {
+                setDirectionY(-1);
+            }
+        }
+        if (keysPressed.contains(65)) {//A
+            setDirectionX(-calculateHorizontalMovement());
+        }
+        if (keysPressed.contains(83)) {//S
+            if (canClimb()) {
+                setDirectionY(1);
+            }
+        }
+        if (keysPressed.contains(68)) {//D
+            setDirectionX(calculateHorizontalMovement());
+        }
+        if (keysPressed.contains(81) && canAttack()){
+            attack();
+        }
+
+        // Play running sound only when moving horizontally and on the ground
+        if ((keysPressed.contains(65) || keysPressed.contains(68)) && isOnGround()) {
+            if (!runningSound.isRunning()) {
+                runningSound.loop(Clip.LOOP_CONTINUOUSLY); // Start playing the running sound
+            }
+        } else {
+            // Stop running sound when A or D key is released or player is not on the ground
+            if (runningSound.isRunning()) {
+                runningSound.stop();
+            }
+        }
+    }
+
+    public JProgressBar getHealthBar() {
+        return healthBar;
+    }
+
+    @Override
+    public double getWidth() {
+        if (isAttacking()) {
+            return 50 * getScale();
+        }
+
+        return ((BufferedImage) getIdleFrame()).getWidth() * getScale();
+    }
+
+    @Override
+    public double getHeight() {
+        if (isAttacking()) {
+            return 37 * getScale();
+        }
+
+        return ((BufferedImage) getIdleFrame()).getHeight() * getScale();
+    }
+
+    public double calculateHorizontalMovement() {
+        if (isAttacking()) {
+            return 0;
+        }
+
+        if (isMovingVertically()) {
+            return 0.75;
+        }
+
+        return 1;
+    }
+
+    private void animateCharacter() {
+        if (isMovingHorizontally() && !isMovingVertically()) {
+            if (!this.runAnimationTimer.isRunning()) {
+                this.runAnimationTimer.start();
+            }
+        } else {
+            this.runAnimationTimer.stop();
+        }
+    }
+
+    public Image getRunFrame() {
+        if (!isFlipped()) {
+            return getLevel().getManager().getEngine().flipImageHorizontal(getLevel().getManager().getEngine().getTexture("player_run_" + runFrameIndex));
+        }
+
+        return getLevel().getManager().getEngine().getTexture("player_run_" + runFrameIndex);
+    }
+
+    public Image getFallFrame() {
+        if (!isFlipped()) {
+            return getLevel().getManager().getEngine().flipImageHorizontal(getLevel().getManager().getEngine().getTexture("player_jump_3"));
+        }
+
+        return getLevel().getManager().getEngine().getTexture("player_jump_3");
+    }
+
+    public Image getJumpFrame() {
+        if (!isFlipped()) {
+            return getLevel().getManager().getEngine().flipImageHorizontal(getLevel().getManager().getEngine().getTexture("player_jump_" + jumpFrameIndex));
+        }
+
+        return getLevel().getManager().getEngine().getTexture("player_jump_" + jumpFrameIndex);
+    }
+
+    @Override
+    public Image getActiveFrame() {
+        if (isAttacking()) {
+            return getAttackFrame();
+        } else if (isJumping()) {
+            return getJumpFrame();
+        } else if (isFalling()) {
+            return getFallFrame();
+        } else if (isMovingHorizontally()) {
+            return getRunFrame();
+        }
+
+        return getIdleFrame();
+    }
+
+    public Image getAttackFrame(){
+        return getLevel().getManager().getEngine().getTexture("player_attack");
+     }
+
+    public void handleDeath() {
+        score /= 2;
+        if (score < 0) {
+            score = 0;
+        }
+        getLevel().clearBeeStingers();
+        getLevel().getManager().getEngine().handlePlayerDeath();
+        getLevel().getManager().getEngine().setPlayerAlive(false);
+    }
+
+    @Override
+    public Enemy getTarget() {
+        for (Entity enemy : getLevel().getEntities()) {
+            if (!enemy.isActive()) {
+                continue;
+            }
+
+            if (enemy instanceof Enemy) {
+                double midX = getLocation().getX() + (getWidth() / 2);
+                if (Math.abs(Location.calculateDistance(enemy.getLocation().getX() + (enemy.getWidth() / 2), enemy.getLocation().getY(), midX, getLocation().getY())) < 64) {
+                    return (Enemy) enemy;
                 }
             }
         }
 
-        Iterator<Particle> iterPart = getParticles().iterator();
-        while (iterPart.hasNext()) {
-            Particle particle = iterPart.next();
-            if (particle.isActive()) {
-                particle.update(dt);
-            } else {
-                iterPart.remove();
-            }
-        }
-
-        for (Decoration deco : getDecorations()) {
-            if (deco.getCollisionBox().collidesWith(getManager().getEngine().getCamera().getCollisionBox())) {
-                deco.update(dt);
-            }
-        }
-
-        for (FakeLightSpot spotLight : getSpotLights()) {
-            spotLight.update(dt);
-        }
+        return null;
     }
 
-    public void reset() {
-        getPlayer().setLocation(spawnPoint.getX(), spawnPoint.getY());
-        getPlayer().setHealth(getPlayer().getMaxHealth());
-        for(Entity entity: getEntities()){
-            if(!entity.isActive()){
-                entity.reset();
-            }
-        }
+    public boolean canClimb() {
+        return getBlockAtLocation() instanceof BlockClimbable;
     }
 
-    public void setSpawn(Location location){
-        spawnPoint = location;
+    public int getScore() {
+        return score;
     }
 
 
-
-    public Player getPlayer() {
-        return player;
-    }
-
-
-
-    public String getName() {
-        return name;
-    }
-
-    public String getNextLevel() {
-        return nextLevel;
-    }
-
-    public Location getSpawnPoint() {
-        return spawnPoint;
-    }
-    public int getId(){
-        return id;
-    }
-
-    public ArrayList<Entity> getEntities() {
-        return entities;
-    }
-
-    public ArrayList<Particle> getParticles(){
-        return particles;
-    }
-
-    public void addEntity(Entity entity) {
-        entities.add(entity);
-    }
-
-    public LevelManager getManager() {
-        return manager;
-    }
-
-    public int getWidth() {
-        return sizeWidth;
-    }
-
-    public int getHeight() {
-        return sizeHeight;
-    }
-
-    public BlockGrid getBlockGrid() {
-        return grid;
-    }
-
-    public ArrayList<FakeLightSpot> getSpotLights() {
-        return spotLights;
-    }
-
-    public void addTextMessage(TextMessage text) {
-        textMessages.put(textCounter, text);
-        textCounter++;
-    }
-
-    public HashMap<Integer, TextMessage> getTextMessages() {
-        return textMessages;
-    }
-
-    public void clearTextMessages() {
-        textMessages.clear();
-    }
-
-    public ArrayList<Decoration> getDecorations() {
-        return decorations;
-    }
-
-    private void addDecoration(DecorationTypes type, Location loc) {
-        Decoration deco = null;
-        loc.setY(loc.getY() + 1);
-         if (type == DecorationTypes.FIREFLIES){
-            deco = new DecorationGIF(type, loc,200, 200);
-        } else {
-             BufferedImage texture = (BufferedImage) getManager().getEngine().getTexture(type.toString());
-             if (type.hasFallingLeaves()) {
-                 deco = new DecorationTree(type, loc, texture.getWidth(), texture.getHeight(), this);
-             } else {
-                 deco = new Decoration(type, loc, texture.getWidth(), texture.getHeight());
-             }
-         }
-
-        if (type == DecorationTypes.TALL_GRASS || type == DecorationTypes.FOREST_PLANT_0 || type == DecorationTypes.FOREST_PLANT_1) {
-            Random rand = new Random();
-            deco.getLocation().setY(loc.getY() + rand.nextDouble(0, 16));
-            deco.setScale(rand.nextDouble(deco.getScale() * 0.75, deco.getScale() * 1.25));
-        }
-
-        decorations.add(deco);
-
-        if (deco.getType().hasLightSpots()) {
-            FakeLightSpot spotLight = new FakeLightSpot(deco);
-            spotLights.add(spotLight);
-        }
-    }
-
-    public void spawnParticle(ParticleTypes type, double x, double y) {
-        Particle particle = new Particle(type, new Location(x, y), this);
-        getParticles().add(particle);
-    }
-
-    public void spawnParticle(ParticleTypes type, double x, double y, double velX, double velY) {
-        Particle particle = new Particle(type, new Location(x, y), this);
-        particle.setVelX(velX);
-        particle.setVelY(velY);
-        getParticles().add(particle);
-    }
-
-    private void assignKeyToMap(char key, String input) {
-        input = input.toUpperCase();
-        for (BlockTypes type : BlockTypes.values()) {
-            if (type.toString().equals(input)) {
-                blockKeyMap.put(key, BlockTypes.valueOf(input));
-                return;
-            }
-        }
-
-        for (EntityType type : EntityType.values()) {
-            if (type.toString().equals(input)) {
-                entityKeyMap.put(key, EntityType.valueOf(input));
-                return;
-            }
-        }
-
-        for (DecorationTypes type : DecorationTypes.values()) {
-            if (type.toString().equals(input)) {
-                decorationKeyMap.put(key, DecorationTypes.valueOf(input));
-                return;
-            }
-        }
-    }
-
-    public GameEngine.AudioClip getBackgroundMusic() {
-        return backgroundMusic;
-    }
-
-    public void setBackgroundMusic(GameEngine.AudioClip backgroundMusic) {
-        this.backgroundMusic = backgroundMusic;
-    }
-
-    public void clearBeeStingers() {
-        entities.removeIf(entity -> entity instanceof BeeStinger);
-    }
 }
