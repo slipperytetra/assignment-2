@@ -10,6 +10,8 @@ import entity.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -32,6 +34,8 @@ public class  Game extends GameEngine {
     LevelManager lvlManager;
     private Level activeLevel;
     Camera camera;
+
+    private boolean playerIsAlive = true;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GameMenu::new);
@@ -93,11 +97,21 @@ public class  Game extends GameEngine {
         }
 
         Player player = getActiveLevel().getPlayer();
-        if(getActiveLevel().getPlayer().getHealth() <= 0){
+        if (player.getHealth() <= 0) {
             gameOver = true;
             drawText(100, 100, "You died", 30);
             getActiveLevel().reset();
-            player.handleDeath();
+            handlePlayerDeath();
+            // Add respawn logic after a delay or based on a condition
+            Timer respawnTimer = new Timer(2000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handlePlayerRespawn();
+                    gameOver = false; // Reset gameOver flag after respawn
+                }
+            });
+            respawnTimer.setRepeats(false);
+            respawnTimer.start();
         } else {
             camera.draw();
         }
@@ -197,6 +211,27 @@ public class  Game extends GameEngine {
 
     public Camera getCamera() {
         return camera;
+    }
+
+
+    public boolean isPlayerAlive() {
+        return playerIsAlive;
+    }
+
+    public void setPlayerAlive(boolean isAlive) {
+        this.playerIsAlive = isAlive;
+    }
+
+    public void handlePlayerDeath() {
+        playerIsAlive = false;
+        activeLevel.clearBeeStingers();
+        // Any other logic for handling player death
+    }
+
+    public void handlePlayerRespawn() {
+        playerIsAlive = true;
+        Player player = activeLevel.getPlayer();
+        player.setHealth(player.getMaxHealth());
     }
 }
 
